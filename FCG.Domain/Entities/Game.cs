@@ -6,7 +6,7 @@
         public required string Name { get; set; }
         public required string Description { get; set; }
         public required string Genre { get; set; }
-        public DateTime ReleaseDate { get; set; } = DateTime.Now;
+        public DateOnly ReleaseDate { get; set; }
         public required DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public int Rating { get; set; } = 0;

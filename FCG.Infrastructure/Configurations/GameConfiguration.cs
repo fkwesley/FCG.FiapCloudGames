@@ -11,12 +11,12 @@ namespace FCG.Infrastructure.Configurations
             builder.ToTable("Game");
             builder.HasKey(g => g.GameId);
             builder.Property(g => g.GameId).ValueGeneratedOnAdd();
-            builder.Property(g => g.GameId).HasColumnType("int");
+            builder.Property(g => g.GameId).HasColumnType("INT");
 
             builder.Property(g => g.Name).IsRequired().HasMaxLength(50);
             builder.Property(g => g.Description).IsRequired().HasMaxLength(100);
             builder.Property(g => g.Genre).IsRequired().HasMaxLength(30);
-            builder.Property(g => g.ReleaseDate);
+            builder.Property(g => g.ReleaseDate).HasColumnType("DATE");
             builder.Property(g => g.CreatedAt).HasDefaultValueSql("GETDATE()");
             builder.Property(g => g.UpdatedAt);
         }

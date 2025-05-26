@@ -7,13 +7,12 @@ namespace FCG.Infrastructure.Context
     {
         private readonly string _connectionString;
 
-        public FiapCloudGamesDbContext()
-        {
-        }
+        //public FiapCloudGamesDbContext()
+        //{
+        //}
 
-        public FiapCloudGamesDbContext(string connectionString)
+        public FiapCloudGamesDbContext(DbContextOptions<FiapCloudGamesDbContext> options) : base(options)
         {
-            _connectionString = connectionString;
         }
 
         public DbSet<Game> Game { get; set; }

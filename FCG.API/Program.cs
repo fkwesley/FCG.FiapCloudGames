@@ -1,4 +1,8 @@
+using FCG.Application.Interfaces;
+using FCG.Application.Services;
+using FCG.Domain.Repositories;
 using FCG.Infrastructure.Context;
+using FCG.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,11 +12,13 @@ var configuration = new ConfigurationBuilder()
     .Build();
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Dependency Injection for Application Layer
+builder.Services.AddScoped<IGameRepository, GameRepository>();
+builder.Services.AddScoped<IGameService, GameService>();
 
 // Register the DbContext with dependency injection
 builder.Services.AddDbContext<FiapCloudGamesDbContext>(options =>
