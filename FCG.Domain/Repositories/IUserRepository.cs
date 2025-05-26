@@ -2,7 +2,7 @@
 
 namespace FCG.Domain.Repositories
 {
-    internal interface IUserRepository
+    public interface IUserRepository
     {
         IEnumerable<User> GetAllUsers();
         User GetUserById(int id);
