@@ -1,13 +1,14 @@
-﻿using FCG.FiapCloudGames.Core.Entities;
+﻿using FCG.Application.DTO.Game;
+using FCG.FiapCloudGames.Core.Entities;
 
 namespace FCG.Application.Interfaces
 {
     public interface IGameService
     {
-        IEnumerable<Game> GetAllGames();
-        Game GetGameById(int id);
-        Game AddGame(Game game);
-        Game UpdateGame(Game game);
+        IEnumerable<GameResponse> GetAllGames();
+        GameResponse GetGameById(int id);
+        GameResponse AddGame(GameRequest game);
+        GameResponse UpdateGame(GameRequest game);
         bool DeleteGame(int id);
     }
 }

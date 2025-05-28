@@ -8,35 +8,35 @@ namespace FCG.FiapCloudGames.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class GamesController : ControllerBase
+    public class UsersController : ControllerBase
     {
-        private readonly IGameService _gameService;
+        private readonly IUserService _userService;
 
-        public GamesController(IGameService gameService)
+        public UsersController(IUserService userService)
         {
-            _gameService = gameService;
+            _userService = userService;
         }
 
         #region GETS
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<GameResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<UserResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetAll()
         {
-            var games = _gameService.GetAllGames();
+            var games = _userService.GetAllUsers();
             return Ok(games);
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(GameResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetById(int id)
         {
             try
             {
-                var game = _gameService.GetGameById(id);
+                var game = _userService.GetUserById(id);
                 return Ok(game);
             }
             catch (KeyNotFoundException ex)
@@ -47,26 +47,25 @@ namespace FCG.FiapCloudGames.Controllers
         #endregion
 
         #region POST
-        [HttpPost(Name = "Games")]
-        [ProducesResponseType(typeof(GameResponse), StatusCodes.Status201Created)]
+        [HttpPost(Name = "Users")]
+        [ProducesResponseType(typeof(UserResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult Add([FromBody] GameRequest gameRequest)
+        public IActionResult Add([FromBody] UserRequest user)
         {
-            var createdGame = _gameService.AddGame(gameRequest);
-            return CreatedAtAction(nameof(GetById), new { id = createdGame.GameId }, createdGame);
+            var created = _userService.AddUser(user);
+            return CreatedAtAction(nameof(GetById), new { id = created.UserId }, created);
         }
         #endregion
 
         #region PUT
         [HttpPut("{id}")]
-        [ProducesResponseType(typeof(GameResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult Update(int id, [FromBody] GameRequest gameRequest)
+        public IActionResult Update(int id, [FromBody] UserRequest user)
         {
-            gameRequest.GameId = id; 
-
-            var updated = _gameService.UpdateGame(gameRequest);
+            user.UserId = id;
+            var updated = _userService.UpdateUser(user);
             return Ok(updated);
         }
         #endregion
@@ -78,7 +77,7 @@ namespace FCG.FiapCloudGames.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult Delete(int id)
         {
-            var deleted = _gameService.DeleteGame(id);
+            var deleted = _userService.DeleteUser(id);
             return deleted ? NoContent() : NotFound();
         }
         #endregion

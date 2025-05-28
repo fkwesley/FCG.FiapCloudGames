@@ -1,11 +1,7 @@
-﻿using FCG.Application.Interfaces;
+﻿using FCG.Application.DTO.Game;
+using FCG.Application.Interfaces;
+using FCG.Application.Mappings;
 using FCG.Domain.Repositories;
-using FCG.FiapCloudGames.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FCG.Application.Services
 {
@@ -18,25 +14,36 @@ namespace FCG.Application.Services
                 ?? throw new ArgumentNullException(nameof(gameRepository));
         }
 
-        public IEnumerable<Game> GetAllGames()
+        public IEnumerable<GameResponse> GetAllGames()
         {
-            return _gameRepository.GetAllGames().ToList();
+            var games = _gameRepository.GetAllGames();
+
+            return games.Select(game => game.ToResponse()).ToList();
         }
 
-        public Game GetGameById(int id)
+        public GameResponse GetGameById(int id)
         {
-            return _gameRepository.GetGameById(id);
+            var gameFound = _gameRepository.GetGameById(id);
+
+            return gameFound.ToResponse();
         }
 
-        public Game AddGame(Game game)
+        public GameResponse AddGame(GameRequest game)
         {
-            return _gameRepository.AddGame(game);
+            var gameEntity = game.ToEntity();
+            var gameAdded = _gameRepository.AddGame(gameEntity);
+
+            return gameAdded.ToResponse();
         }
 
-        public Game UpdateGame(Game game)
+        public GameResponse UpdateGame(GameRequest game)
         {
-            return _gameRepository.UpdateGame(game);
+            var gameEntity = game.ToEntity();
+            var gameUpdated = _gameRepository.UpdateGame(gameEntity);
+
+            return gameUpdated.ToResponse();
         }
+
         public bool DeleteGame(int id)
         {
             return _gameRepository.DeleteGame(id);

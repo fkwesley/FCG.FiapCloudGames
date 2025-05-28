@@ -50,13 +50,13 @@ namespace FCG.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
+                    b.Property<int?>("Rating")
+                        .HasColumnType("INT");
 
                     b.Property<DateOnly>("ReleaseDate")
                         .HasColumnType("DATE");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("GameId");
@@ -102,7 +102,7 @@ namespace FCG.Infrastructure.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<DateTime>("UpdatedAt")
+                    b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("UserId");

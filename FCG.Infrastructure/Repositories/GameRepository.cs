@@ -20,18 +20,18 @@ namespace FCG.Infrastructure.Repositories
 
         public IEnumerable<Game> GetAllGames()
         {
-           return _context.Game.ToList();
+           return _context.Games.ToList();
         }
 
         public Game GetGameById(int id)
         {
-            return _context.Game.FirstOrDefault(g => g.GameId == id) 
+            return _context.Games.FirstOrDefault(g => g.GameId == id) 
                 ?? throw new KeyNotFoundException($"Game with ID {id} not found.");
         }
 
         public Game AddGame(Game game)
         {
-            _context.Game.Add(game);
+            _context.Games.Add(game);
             _context.SaveChanges();
             return game;
         }
@@ -48,7 +48,7 @@ namespace FCG.Infrastructure.Repositories
                 existingGame.UpdatedAt = DateTime.Now; 
                 existingGame.Rating = game.Rating;
                 
-                _context.Game.Update(existingGame);
+                _context.Games.Update(existingGame);
                 _context.SaveChanges();
             }
 
@@ -61,7 +61,7 @@ namespace FCG.Infrastructure.Repositories
 
             if (game != null)
             {
-                _context.Game.Remove(game);
+                _context.Games.Remove(game);
                 _context.SaveChanges();
                 return true;
             }

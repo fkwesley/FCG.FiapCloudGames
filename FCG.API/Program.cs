@@ -20,6 +20,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<IGameService, GameService>();
 
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 // Register the DbContext with dependency injection
 builder.Services.AddDbContext<FiapCloudGamesDbContext>(options =>
 {
