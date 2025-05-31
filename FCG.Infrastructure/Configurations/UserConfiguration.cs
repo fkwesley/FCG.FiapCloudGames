@@ -10,7 +10,7 @@ namespace FCG.Infrastructure.Configurations
         {
             builder.ToTable("User");
             builder.HasKey(u => u.UserId);
-            builder.Property(u => u.UserId).ValueGeneratedOnAdd().HasColumnType("int");
+            builder.Property(u => u.UserId).HasColumnType("VARCHAR(15)");
 
             builder.Property(u => u.Name).IsRequired().HasMaxLength(50);
             builder.Property(u => u.Email).IsRequired().HasMaxLength(100);

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FCG.Infrastructure.Migrations
 {
     [DbContext(typeof(FiapCloudGamesDbContext))]
-    [Migration("20250528035043_migration-1")]
+    [Migration("20250530194151_migration-1")]
     partial class migration1
     {
         /// <inheritdoc />
@@ -69,11 +69,8 @@ namespace FCG.Infrastructure.Migrations
 
             modelBuilder.Entity("FCG.FiapCloudGames.Core.Entities.User", b =>
                 {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+                    b.Property<string>("UserId")
+                        .HasColumnType("VARCHAR(15)");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()

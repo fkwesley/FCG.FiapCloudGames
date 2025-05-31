@@ -34,8 +34,7 @@ namespace FCG.Infrastructure.Migrations
                 name: "User",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "VARCHAR(15)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),

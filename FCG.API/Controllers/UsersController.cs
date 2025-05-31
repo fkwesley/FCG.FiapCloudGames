@@ -2,11 +2,13 @@ using FCG.Application.DTO.Game;
 using FCG.Application.DTO.User;
 using FCG.Application.Interfaces;
 using FCG.FiapCloudGames.Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FCG.FiapCloudGames.Controllers
 {
     [ApiController]
+    [Authorize(Roles = "Admin")]
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
@@ -18,8 +20,13 @@ namespace FCG.FiapCloudGames.Controllers
         }
 
         #region GETS
+        /// <summary>
+        /// Returns all users registered.
+        /// </summary>
+        /// <returns>List of Users</returns>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<UserResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult GetAll()
@@ -28,11 +35,16 @@ namespace FCG.FiapCloudGames.Controllers
             return Ok(games);
         }
 
+        /// <summary>
+        /// Returms a user by id.
+        /// </summary>
+        /// <returns>Object User</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult GetById(int id)
+        public IActionResult GetById(string id)
         {
             try
             {
@@ -47,8 +59,13 @@ namespace FCG.FiapCloudGames.Controllers
         #endregion
 
         #region POST
+        /// <summary>
+        /// Add a user.
+        /// </summary>
+        /// <returns>Object User added</returns>
         [HttpPost(Name = "Users")]
         [ProducesResponseType(typeof(UserResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult Add([FromBody] UserRequest user)
         {
@@ -58,11 +75,16 @@ namespace FCG.FiapCloudGames.Controllers
         #endregion
 
         #region PUT
+        /// <summary>
+        /// Update a user.
+        /// </summary>
+        /// <returns>Object User updated</returns>
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult Update(int id, [FromBody] UserRequest user)
+        public IActionResult Update(string id, [FromBody] UserRequest user)
         {
             user.UserId = id;
             var updated = _userService.UpdateUser(user);
@@ -71,11 +93,16 @@ namespace FCG.FiapCloudGames.Controllers
         #endregion
 
         #region DELETE
+        /// <summary>
+        /// Delete a user.
+        /// </summary>
+        /// <returns>No content</returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(string id)
         {
             var deleted = _userService.DeleteUser(id);
             return deleted ? NoContent() : NotFound();

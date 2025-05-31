@@ -11,12 +11,12 @@ namespace FCG.Application.Mappings
         {
             return new User
             {
-                UserId = request.UserId, 
-                Name = request.Name,         
-                Email = request.Email,       
-                Password = request.Password, 
-                IsActive = true,   
-                IsAdmin = false              
+                UserId = request.UserId.ToUpper(), 
+                Name = request.Name.ToUpper(),         
+                Email = request.Email.ToLower(),       
+                Password = request.Password.ToUpper(), 
+                IsActive = request.IsActive,   
+                IsAdmin = request.IsAdmin              
             };
         }
 

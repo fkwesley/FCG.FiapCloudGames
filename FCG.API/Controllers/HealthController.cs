@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FCG.Application.DTO.User;
+using Microsoft.AspNetCore.Mvc;
 
 namespace FCG.FiapCloudGames.Controllers
 {
@@ -6,6 +7,12 @@ namespace FCG.FiapCloudGames.Controllers
     [Route("[controller]")]
     public class HealthController : ControllerBase
     {
+        /// <summary>
+        /// returns the current health status of the api.
+        /// </summary>
+        /// <returns>No content</returns>
+        [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost(Name = "Health")]
         public IActionResult Health()
         {

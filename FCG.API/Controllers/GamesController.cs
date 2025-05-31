@@ -2,11 +2,13 @@ using FCG.Application.DTO.Game;
 using FCG.Application.DTO.User;
 using FCG.Application.Interfaces;
 using FCG.FiapCloudGames.Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FCG.FiapCloudGames.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]")]
     public class GamesController : ControllerBase
     {
@@ -18,6 +20,10 @@ namespace FCG.FiapCloudGames.Controllers
         }
 
         #region GETS
+        /// <summary>
+        /// Returns all users registered.
+        /// </summary>
+        /// <returns>List of Users</returns>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<GameResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -28,6 +34,10 @@ namespace FCG.FiapCloudGames.Controllers
             return Ok(games);
         }
 
+        /// <summary>
+        /// Returms a game by id.
+        /// </summary>
+        /// <returns>Object User</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(GameResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -47,7 +57,12 @@ namespace FCG.FiapCloudGames.Controllers
         #endregion
 
         #region POST
+        /// <summary>
+        /// Add a game.
+        /// </summary>
+        /// <returns>Object User added</returns>
         [HttpPost(Name = "Games")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(GameResponse), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult Add([FromBody] GameRequest gameRequest)
@@ -58,7 +73,12 @@ namespace FCG.FiapCloudGames.Controllers
         #endregion
 
         #region PUT
+        /// <summary>
+        /// Update a game.
+        /// </summary>
+        /// <returns>Object User updated</returns>
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(typeof(GameResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -72,7 +92,12 @@ namespace FCG.FiapCloudGames.Controllers
         #endregion
 
         #region DELETE
+        /// <summary>
+        /// Delete a game.
+        /// </summary>
+        /// <returns>No content</returns>
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

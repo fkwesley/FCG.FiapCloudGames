@@ -13,10 +13,9 @@ namespace FCG.Infrastructure.Repositories
             return _context.Users.ToList();
         }
 
-        public User GetUserById(int id)
+        public User? GetUserById(string userId)
         {
-            return _context.Users.FirstOrDefault(g => g.UserId == id)
-                ?? throw new KeyNotFoundException($"User with ID {id} not found.");
+            return _context.Users.FirstOrDefault(g => g.UserId == userId);
         }
 
         public UserRepository(FiapCloudGamesDbContext context)
@@ -53,7 +52,7 @@ namespace FCG.Infrastructure.Repositories
                 throw new KeyNotFoundException($"User with ID {user.UserId} not found.");
         }
 
-        public bool DeleteUser(int id)
+        public bool DeleteUser(string id)
         {
             var user = GetUserById(id);
 

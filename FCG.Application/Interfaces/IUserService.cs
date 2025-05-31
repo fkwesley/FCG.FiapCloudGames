@@ -6,9 +6,10 @@ namespace FCG.Application.Interfaces
     public interface IUserService
     {
         IEnumerable<UserResponse> GetAllUsers();
-        UserResponse GetUserById(int id);
+        UserResponse GetUserById(string userId);
         UserResponse AddUser(UserRequest user);
         UserResponse UpdateUser(UserRequest user);
-        bool DeleteUser(int id);
+        bool DeleteUser(string userId);
+        User? ValidateCredentials(string userId, string password);
     }
 }
