@@ -1,4 +1,5 @@
 ﻿using FCG.Application.DTO.User;
+using FCG.Application.Exceptions;
 using FCG.Application.Interfaces;
 using FCG.Application.Mappings;
 using FCG.Domain.Repositories;
@@ -34,14 +35,14 @@ namespace FCG.Application.Services
             var activeUsers = _userRepository.GetAllUsers().Where(u => u.IsActive);
 
             if (activeUsers.Any(u => u.UserId == user.UserId.ToUpper()))
-                throw new Exception("UserId already exists. Try another one.");
+                throw new ValidationException("UserId already exists. Try another one.");
 
             if (activeUsers.Any(u => u.Email == user.Email.ToLower()))
-                throw new Exception("E-mail already used by another active user. Try another one.");
+                throw new ValidationException("E-mail already used by another active user. Try another one.");
 
             var userEntity = user.ToEntity();
             var userAdded = _userRepository.AddUser(userEntity);
-                
+            
             return userAdded.ToResponse();
         }
 
@@ -50,7 +51,7 @@ namespace FCG.Application.Services
             var activeUsers = _userRepository.GetAllUsers().Where(u => u.IsActive && u.UserId != user.UserId);
 
             if (activeUsers.Any(u => u.Email == user.Email.ToLower()))
-                throw new Exception("E-mail already used by another active user. Try another one.");
+                throw new ValidationException("E-mail already used by another active user. Try another one.");
 
             var userEntity = user.ToEntity();
             var userUpdated = _userRepository.UpdateUser(userEntity);
@@ -69,8 +70,8 @@ namespace FCG.Application.Services
 
             if (userFound != null && userFound.Password == password)
                 return userFound;
-            else 
-                return null;
+            else
+                throw new UnauthorizedAccessException("User or password invalid.");
         }
 
     }

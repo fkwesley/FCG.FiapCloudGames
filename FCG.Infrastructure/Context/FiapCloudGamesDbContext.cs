@@ -1,4 +1,5 @@
-﻿using FCG.FiapCloudGames.Core.Entities;
+﻿using FCG.Domain.Entities;
+using FCG.FiapCloudGames.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace FCG.Infrastructure.Context
@@ -7,16 +8,13 @@ namespace FCG.Infrastructure.Context
     {
         private readonly string _connectionString;
 
-        //public FiapCloudGamesDbContext()
-        //{
-        //}
-
         public FiapCloudGamesDbContext(DbContextOptions<FiapCloudGamesDbContext> options) : base(options)
         {
         }
 
         public DbSet<Game> Games { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<LogEntry> LogEntries { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

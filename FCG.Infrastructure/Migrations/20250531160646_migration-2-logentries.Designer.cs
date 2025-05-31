@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FCG.Infrastructure.Migrations
 {
     [DbContext(typeof(FiapCloudGamesDbContext))]
-    [Migration("20250531050339_migration-2")]
-    partial class migration2
+    [Migration("20250531160646_migration-2-logentries")]
+    partial class migration2logentries
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,37 @@ namespace FCG.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("FCG.Domain.Entities.LogEntry", b =>
+                {
+                    b.Property<Guid>("LogId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Level")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("StackTrace")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.HasKey("LogId");
+
+                    b.ToTable("Log_entry", (string)null);
+                });
 
             modelBuilder.Entity("FCG.FiapCloudGames.Core.Entities.Game", b =>
                 {

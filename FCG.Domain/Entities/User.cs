@@ -1,9 +1,12 @@
-﻿using System.Text.RegularExpressions;
+﻿using FCG.Domain.Exceptions;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace FCG.FiapCloudGames.Core.Entities
 {
     public class User
     {
+        [DebuggerDisplay("UserId: {UserId}, Name: {Name}, IsActive: {IsActive}")]
         public required string UserId { get; set; }
         public required string Name { get; set; }
         private string _email { get; set; }         
@@ -20,7 +23,7 @@ namespace FCG.FiapCloudGames.Core.Entities
             set
             {
                 if (!EmailRegex.IsMatch(value)) // Se o valor não corresponde ao padrão de e-mail...
-                    throw new ArgumentException("Invalid email format."); // ...lança exceção.
+                    throw new BusinessException("Invalid email format."); // ...lança exceção.
                 _email = value; // Se válido, atribui ao campo privado.
             }
         }
@@ -32,7 +35,7 @@ namespace FCG.FiapCloudGames.Core.Entities
             set
             {
                 if (!StrongPasswordRegex.IsMatch(value)) // Se não for uma senha segura...
-                    throw new ArgumentException("Password must be at least 8 characters and include letters, numbers and special characters."); // ...lança exceção.
+                    throw new BusinessException("Password must be at least 8 characters and include letters, numbers and special characters."); // ...lança exceção.
                 _password = value; // Se válida, atribui ao campo privado.
             }
         }

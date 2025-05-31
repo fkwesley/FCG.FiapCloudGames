@@ -20,7 +20,7 @@ namespace FCG.API.Controllers
         }
 
         /// <summary>
-        /// Returms a JWT token for authentication.
+        /// Returns a JWT token for authentication.
         /// </summary>
         /// <returns>JWT Token</returns>
         [HttpPost("Login")]

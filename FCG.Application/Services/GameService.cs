@@ -1,4 +1,5 @@
 ﻿using FCG.Application.DTO.Game;
+using FCG.Application.Exceptions;
 using FCG.Application.Interfaces;
 using FCG.Application.Mappings;
 using FCG.Domain.Repositories;
@@ -32,7 +33,7 @@ namespace FCG.Application.Services
         public GameResponse AddGame(GameRequest game)
         {
             if (_gameRepository.GetAllGames().Any(g => g.Name == game.Name))
-                throw new Exception(string.Format("Game {0} already exists.",game.Name));
+                throw new ValidationException(string.Format("Game {0} already exists.",game.Name));
 
             var gameEntity = game.ToEntity();
             var gameAdded = _gameRepository.AddGame(gameEntity);
@@ -43,7 +44,7 @@ namespace FCG.Application.Services
         public GameResponse UpdateGame(GameRequest game)
         {
             if (_gameRepository.GetAllGames().Any(g => g.Name == game.Name && g.GameId != game.GameId))
-                throw new Exception(string.Format("Game {0} already exists.", game.Name));
+                throw new ValidationException(string.Format("Game {0} already exists.", game.Name));
 
             var gameEntity = game.ToEntity();
             var gameUpdated = _gameRepository.UpdateGame(gameEntity);

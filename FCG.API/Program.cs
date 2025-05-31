@@ -1,3 +1,6 @@
+using Azure;
+using FCG.API.Middlewares;
+using FCG.API.Models;
 using FCG.Application.Interfaces;
 using FCG.Application.Services;
 using FCG.Domain.Repositories;
@@ -9,17 +12,22 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 
+#region initializing
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
     .Build();
 
-// Add services to the container.
 var jwtKey = configuration["Jwt:Key"];
 var jwtIssuer = configuration["Jwt:Issuer"];
+#endregion
 
+#region services
+
+#region authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -44,12 +52,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 context.Response.StatusCode = 401;
                 context.Response.ContentType = "application/json";
 
-                var result = System.Text.Json.JsonSerializer.Serialize(new
+                var result = new ErrorResponse
                 {
-                    message = "Invalid Token, not Authenticated."
-                });
+                    Message = "Invalid Token, not Authenticated."
+                };
 
-                return context.Response.WriteAsync(result);
+                var json = JsonSerializer.Serialize(result);
+                return context.Response.WriteAsync(json);
             },
 
             // Quando autenticado, mas sem permissão (ex: não tem role)
@@ -58,19 +67,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 context.Response.StatusCode = 403;
                 context.Response.ContentType = "application/json";
 
-                var result = System.Text.Json.JsonSerializer.Serialize(new
+                var result = new ErrorResponse
                 {
-                    message = "Access Denied! Only Admin users can run this operation."
-                });
+                    Message = "Access Denied! You do not have permission to perform this operation."
+                };
 
-                return context.Response.WriteAsync(result);
+                var json = JsonSerializer.Serialize(result);
+                return context.Response.WriteAsync(json);
             }
         };
     });
-
-builder.Services.AddAuthorization();
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
+#endregion
 
 #region swagger
 builder.Services.AddSwaggerGen(c =>
@@ -109,31 +116,47 @@ builder.Services.AddSwaggerGen(c =>
 });
 #endregion
 
+#region dependencyInjection
 // Dependency Injection for Application Layer
 builder.Services.AddSingleton<IAuthService>(new AuthService(jwtKey, jwtIssuer));
 
-builder.Services.AddScoped<IGameRepository, GameRepository>();
-builder.Services.AddScoped<IGameService, GameService>();
-
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+//services
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<ILoggerService, LoggerService>();
+
+//repositories
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IGameRepository, GameRepository>();
+builder.Services.AddScoped<ILoggerRepository, LoggerRepository>();
 
 // Register the DbContext with dependency injection
 builder.Services.AddDbContext<FiapCloudGamesDbContext>(options =>
 {
     options.UseSqlServer(configuration.GetConnectionString("FiapCloudGamesDbConnection"));
 }, ServiceLifetime.Scoped);
+#endregion
+
+#region otherServices
+builder.Services.AddAuthorization();
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+#endregion
+
+#endregion services
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+#region middlewares
+// middleware para tratamento global de erros
+app.UseMiddleware<ErrorHandlingMiddleware>();
+
+// middleware para uso do swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 // Middleware que valida autenticação JWT em cada requisição
 app.UseAuthentication();
@@ -141,6 +164,11 @@ app.UseAuthentication();
 // Middleware que avalia autorizações (ex: [Authorize])
 app.UseAuthorization();
 
+//middleware que força o redirecionamento automático de requisições HTTP para HTTPS
+app.UseHttpsRedirection();
+
+// Endpoint routing
 app.MapControllers();
+#endregion
 
 app.Run();
