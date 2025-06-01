@@ -3,7 +3,11 @@ using FCG.Application.Exceptions;
 using FCG.Application.Interfaces;
 using FCG.Domain.Entities;
 using FCG.Domain.Exceptions;
+using FCG.Domain.Enums;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using LogLevel = FCG.Domain.Enums.LogLevel;
 
 namespace FCG.API.Middlewares
 {
@@ -11,16 +15,16 @@ namespace FCG.API.Middlewares
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<ErrorHandlingMiddleware> _logger;  // Logger padrão (console, arquivo, etc)
-        private readonly IServiceProvider _serviceProvider;         // Para resolver serviços Scoped no escopo correto
+        private readonly IServiceScopeFactory _scopeFactory;        // Para resolver serviços Scoped no escopo correto
 
         public ErrorHandlingMiddleware(
             RequestDelegate next, 
-            ILogger<ErrorHandlingMiddleware> logger, 
-            IServiceProvider serviceProvider)
+            ILogger<ErrorHandlingMiddleware> logger,
+            IServiceScopeFactory scopeFactory)
         {
             _next = next;
             _logger = logger;
-            _serviceProvider = serviceProvider;
+            _scopeFactory = scopeFactory;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -39,11 +43,16 @@ namespace FCG.API.Middlewares
 
         private async Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
-            var logEntry = new LogEntry
+            // Recupera o mesmo LogId gerado pelo middleware de request
+            var logId = context.Items.ContainsKey("RequestId")
+                ? (Guid)context.Items["RequestId"]
+                : Guid.NewGuid(); // Garante que sempre haverá um LogId, mesmo se o middleware anterior falhou
+
+            var trace = new Trace
             {
-                LogId = Guid.NewGuid(),
+                LogId = logId,
                 Timestamp = DateTime.UtcNow,
-                Level = "Error",
+                Level = LogLevel.Error,
                 Message = ex.Message,
                 StackTrace = ex.StackTrace ?? string.Empty
             };
@@ -51,11 +60,11 @@ namespace FCG.API.Middlewares
             try
             {
                 // Cria escopo para resolver ILoggerService (Scoped) corretamente
-                using var scope = _serviceProvider.CreateScope();
+                using var scope = _scopeFactory.CreateScope();
                 var loggerService = scope.ServiceProvider.GetRequiredService<ILoggerService>();
 
                 // Salva o log no banco via serviço de log
-                await loggerService.SaveLogAsync(logEntry);
+                await loggerService.LogTraceAsync(trace);
             }
             catch (Exception logEx)
             {
@@ -75,7 +84,7 @@ namespace FCG.API.Middlewares
                 ValidationException => StatusCodes.Status400BadRequest,
                 BusinessException => StatusCodes.Status400BadRequest,
                 UnauthorizedAccessException => StatusCodes.Status401Unauthorized,
-
+                KeyNotFoundException => StatusCodes.Status404NotFound,
                 _ => StatusCodes.Status500InternalServerError
             };
 
@@ -84,7 +93,7 @@ namespace FCG.API.Middlewares
             {
                 Message = "An error occurred processing your request.",
                 Detail = context.Response.StatusCode != StatusCodes.Status500InternalServerError ? ex.Message : "Contact our support and send the LogId returned.",
-                LogId = context.Response.StatusCode == StatusCodes.Status500InternalServerError ? logEntry.LogId : null
+                LogId = context.Response.StatusCode == StatusCodes.Status500InternalServerError ? trace.LogId : null
             };
 
             var json = JsonSerializer.Serialize(response);

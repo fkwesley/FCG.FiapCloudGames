@@ -138,6 +138,7 @@ builder.Services.AddDbContext<FiapCloudGamesDbContext>(options =>
 #endregion
 
 #region otherServices
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -148,9 +149,6 @@ builder.Services.AddEndpointsApiExplorer();
 var app = builder.Build();
 
 #region middlewares
-// middleware para tratamento global de erros
-app.UseMiddleware<ErrorHandlingMiddleware>();
-
 // middleware para uso do swagger
 if (app.Environment.IsDevelopment())
 {
@@ -163,6 +161,12 @@ app.UseAuthentication();
 
 // Middleware que avalia autorizações (ex: [Authorize])
 app.UseAuthorization();
+
+// middleware para log de requisições
+app.UseMiddleware<RequestLoggingMiddleware>();
+
+// middleware para tratamento global de erros
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 //middleware que força o redirecionamento automático de requisições HTTP para HTTPS
 app.UseHttpsRedirection();

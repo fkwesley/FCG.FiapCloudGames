@@ -17,8 +17,19 @@ namespace FCG.Infrastructure.Configurations
             builder.Property(g => g.Genre).IsRequired().HasMaxLength(30);
             builder.Property(g => g.ReleaseDate).IsRequired().HasColumnType("DATE");
             builder.Property(g => g.Rating).IsRequired(false).HasColumnType("INT");
-            builder.Property(g => g.CreatedAt).IsRequired().HasDefaultValueSql("GETDATE()");
-            builder.Property(g => g.UpdatedAt).IsRequired(false);
+            builder.Property(g => g.CreatedAt)
+                .IsRequired()
+                .HasDefaultValueSql("GETDATE()")
+                .HasConversion(
+                    v => v, // Grava no banco normalmente
+                    v => DateTime.SpecifyKind(v, DateTimeKind.Utc) // Força Kind como UTC ao ler
+                );
+            builder.Property(g => g.UpdatedAt)
+                .IsRequired(false)
+                .HasConversion(
+                    v => v, // Grava no banco normalmente  
+                    v => v.HasValue ? DateTime.SpecifyKind(v.Value, DateTimeKind.Utc) : null // Força Kind como UTC ao ler  
+                );
         }
     }
 }

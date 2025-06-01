@@ -41,7 +41,7 @@ namespace FCG.Infrastructure.Repositories
                 existingUser.Password = user.Password;
                 existingUser.IsActive = user.IsActive;
                 existingUser.IsAdmin = user.IsAdmin;
-                existingUser.UpdatedAt = DateTime.Now;
+                existingUser.UpdatedAt = DateTime.UtcNow;
                 
                 _context.Users.Update(existingUser);
                 _context.SaveChanges();
@@ -62,7 +62,8 @@ namespace FCG.Infrastructure.Repositories
                 _context.SaveChanges();
                 return true;
             }
-            return false;
+            else
+                throw new KeyNotFoundException($"User with ID {id} not found.");
         }
 
 

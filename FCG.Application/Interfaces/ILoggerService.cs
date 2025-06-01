@@ -9,6 +9,10 @@ namespace FCG.Application.Interfaces
 {
     public interface ILoggerService
     {
-        public Task SaveLogAsync(LogEntry logEntry);
+        Task LogTraceAsync(Trace trace);
+
+        Task LogRequestAsync(RequestLog logEntry);
+        Task UpdateRequestLogAsync(RequestLog logEntry);
+
     }
 }

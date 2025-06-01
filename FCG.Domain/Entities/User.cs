@@ -1,4 +1,5 @@
-﻿using FCG.Domain.Exceptions;
+﻿using FCG.Domain.Entities;
+using FCG.Domain.Exceptions;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
@@ -52,5 +53,8 @@ namespace FCG.FiapCloudGames.Core.Entities
         // - Mínimo de 8 caracteres
         private static readonly Regex StrongPasswordRegex =
             new(@"^(?=.*[a-zA-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$", RegexOptions.Compiled);
+
+        public ICollection<RequestLog> RequestLogs { get; set; } = new List<RequestLog>();
+
     }
 }

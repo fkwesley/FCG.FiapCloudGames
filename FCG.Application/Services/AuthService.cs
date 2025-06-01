@@ -28,7 +28,8 @@ namespace FCG.Application.Services
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserId),
-                new Claim(ClaimTypes.Name, user.UserId),
+                new Claim("user_id", user.UserId),
+                new Claim(ClaimTypes.Name, user.Name),
                 new Claim(ClaimTypes.Role, user.IsAdmin ? "Admin" : "User")
             };
 

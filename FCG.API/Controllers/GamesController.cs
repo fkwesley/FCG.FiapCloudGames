@@ -105,8 +105,8 @@ namespace FCG.FiapCloudGames.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult Delete(int id)
         {
-            var deleted = _gameService.DeleteGame(id);
-            return deleted ? NoContent() : NotFound();
+            _gameService.DeleteGame(id);
+            return NoContent();
         }
         #endregion
     }

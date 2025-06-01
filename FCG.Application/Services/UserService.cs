@@ -61,7 +61,7 @@ namespace FCG.Application.Services
 
         public bool DeleteUser(string userId)
         {
-            return _userRepository.DeleteUser(userId);
+            return _userRepository.DeleteUser(userId.ToUpper());
         }
 
         public User? ValidateCredentials(string userId, string password)

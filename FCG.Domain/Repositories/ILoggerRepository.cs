@@ -4,6 +4,9 @@ namespace FCG.Domain.Repositories
 {
     public interface ILoggerRepository
     {
-        public Task SaveLogAsync(LogEntry logEntry);
+        public Task LogTraceAsync(Trace log);
+        public Task LogRequestAsync(RequestLog log);
+
+        public Task UpdateRequestLogAsync(RequestLog log);
     }
 }

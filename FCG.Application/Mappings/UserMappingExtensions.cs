@@ -1,4 +1,5 @@
 ﻿using FCG.Application.DTO.User;
+using FCG.Application.Helpers;
 using FCG.FiapCloudGames.Core.Entities;
 
 namespace FCG.Application.Mappings
@@ -14,7 +15,7 @@ namespace FCG.Application.Mappings
                 UserId = request.UserId.ToUpper(), 
                 Name = request.Name.ToUpper(),         
                 Email = request.Email.ToLower(),       
-                Password = request.Password.ToUpper(), 
+                Password = request.Password, 
                 IsActive = request.IsActive,   
                 IsAdmin = request.IsAdmin              
             };
@@ -31,8 +32,9 @@ namespace FCG.Application.Mappings
                 Email = entity.Email,
                 Password = entity.Password,
                 IsActive = entity.IsActive,
-                CreatedAt = entity.CreatedAt,
-                UpdatedAt = entity.UpdatedAt,
+                CreatedAt = DateTimeHelper.ConvertUtcToTimeZone(entity.CreatedAt, "E. South America Standard Time"),
+                UpdatedAt = entity.UpdatedAt.HasValue ? 
+                                DateTimeHelper.ConvertUtcToTimeZone(entity.UpdatedAt.Value, "E. South America Standard Time") : (DateTime?)null,
                 IsAdmin = entity.IsAdmin
             };
         }

@@ -115,7 +115,7 @@ namespace FCG.FiapCloudGames.Controllers
         public IActionResult Delete(string id)
         {
             var deleted = _userService.DeleteUser(id);
-            return deleted ? NoContent() : NotFound();
+            return NoContent();
         }
         #endregion
     }

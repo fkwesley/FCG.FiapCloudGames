@@ -1,4 +1,5 @@
 ﻿using FCG.Application.DTO.Game;
+using FCG.Application.Helpers;
 using FCG.FiapCloudGames.Core.Entities;
 
 namespace FCG.Application.Mappings
@@ -31,8 +32,9 @@ namespace FCG.Application.Mappings
                 Description = entity.Description,
                 Genre = entity.Genre,
                 ReleaseDate = entity.ReleaseDate,
-                CreatedAt = entity.CreatedAt,
-                UpdatedAt = entity.UpdatedAt,
+                CreatedAt = DateTimeHelper.ConvertUtcToTimeZone(entity.CreatedAt, "E. South America Standard Time"),
+                UpdatedAt = entity.UpdatedAt.HasValue ? 
+                                DateTimeHelper.ConvertUtcToTimeZone(entity.UpdatedAt.Value, "E. South America Standard Time") : (DateTime?)null,
                 Rating = entity.Rating
             };
         }

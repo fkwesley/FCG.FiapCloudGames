@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FCG.Infrastructure.Migrations
 {
     [DbContext(typeof(FiapCloudGamesDbContext))]
-    [Migration("20250531160646_migration-2-logentries")]
-    partial class migration2logentries
+    [Migration("20250601023710_migration-1")]
+    partial class migration1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,16 +25,67 @@ namespace FCG.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("FCG.Domain.Entities.LogEntry", b =>
+            modelBuilder.Entity("FCG.Domain.Entities.RequestLog", b =>
                 {
                     b.Property<Guid>("LogId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<TimeSpan>("Duration")
+                        .HasColumnType("time");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("HttpMethod")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("RequestBody")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ResponseBody")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("StatusCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("LogId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Request_log", (string)null);
+                });
+
+            modelBuilder.Entity("FCG.Domain.Entities.Trace", b =>
+                {
+                    b.Property<int>("TraceId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TraceId"));
+
                     b.Property<string>("Level")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid?>("LogId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Message")
                         .IsRequired()
@@ -42,7 +93,6 @@ namespace FCG.Infrastructure.Migrations
                         .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("StackTrace")
-                        .IsRequired()
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
 
@@ -51,9 +101,11 @@ namespace FCG.Infrastructure.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.HasKey("LogId");
+                    b.HasKey("TraceId");
 
-                    b.ToTable("Log_entry", (string)null);
+                    b.HasIndex("LogId");
+
+                    b.ToTable("Trace_log", (string)null);
                 });
 
             modelBuilder.Entity("FCG.FiapCloudGames.Core.Entities.Game", b =>
@@ -101,7 +153,8 @@ namespace FCG.Infrastructure.Migrations
             modelBuilder.Entity("FCG.FiapCloudGames.Core.Entities.User", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("VARCHAR(15)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -139,6 +192,50 @@ namespace FCG.Infrastructure.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("User", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "ADMIN",
+                            CreatedAt = new DateTime(2025, 6, 1, 2, 37, 10, 490, DateTimeKind.Utc).AddTicks(7418),
+                            Email = "admin@fiap.com",
+                            IsActive = true,
+                            IsAdmin = true,
+                            Name = "APPLICATION ADMIN",
+                            Password = "Password1*"
+                        });
+                });
+
+            modelBuilder.Entity("FCG.Domain.Entities.RequestLog", b =>
+                {
+                    b.HasOne("FCG.FiapCloudGames.Core.Entities.User", "User")
+                        .WithMany("RequestLogs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("FK_RequestLog_User");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("FCG.Domain.Entities.Trace", b =>
+                {
+                    b.HasOne("FCG.Domain.Entities.RequestLog", "RequestLog")
+                        .WithMany("Traces")
+                        .HasForeignKey("LogId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("RequestLog");
+                });
+
+            modelBuilder.Entity("FCG.Domain.Entities.RequestLog", b =>
+                {
+                    b.Navigation("Traces");
+                });
+
+            modelBuilder.Entity("FCG.FiapCloudGames.Core.Entities.User", b =>
+                {
+                    b.Navigation("RequestLogs");
                 });
 #pragma warning restore 612, 618
         }

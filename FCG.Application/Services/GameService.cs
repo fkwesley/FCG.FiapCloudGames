@@ -2,6 +2,8 @@
 using FCG.Application.Exceptions;
 using FCG.Application.Interfaces;
 using FCG.Application.Mappings;
+using FCG.Domain.Entities;
+using FCG.Domain.Enums;
 using FCG.Domain.Repositories;
 using FCG.FiapCloudGames.Core.Entities;
 
@@ -10,15 +12,25 @@ namespace FCG.Application.Services
     public class GameService : IGameService
     {
         private readonly IGameRepository _gameRepository;
-        public GameService(IGameRepository gameRepository)
+        private readonly ILoggerService _loggerService;
+        public GameService(IGameRepository gameRepository, ILoggerService loggerService)
         {
             _gameRepository = gameRepository 
                 ?? throw new ArgumentNullException(nameof(gameRepository));
+            _loggerService = loggerService;
         }
 
         public IEnumerable<GameResponse> GetAllGames()
         {
             var games = _gameRepository.GetAllGames();
+
+            _loggerService.LogTraceAsync(new Trace
+            {
+                Timestamp = DateTime.UtcNow,
+                Level = LogLevel.Info,
+                Message = "Retrieved all games",
+                StackTrace = null
+            });
 
             return games.Select(game => game.ToResponse()).ToList();
         }

@@ -14,7 +14,8 @@ namespace FCG.Infrastructure.Context
 
         public DbSet<Game> Games { get; set; }
         public DbSet<User> Users { get; set; }
-        public DbSet<LogEntry> LogEntries { get; set; }
+        public DbSet<RequestLog> RequestLogs { get; set; }
+        public DbSet<Trace> Traces { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
