@@ -10,10 +10,14 @@ namespace FCG.Application.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository)
+        private readonly IPasswordHasherRepository _passwordHasher;
+        public UserService(IUserRepository userRepository, IPasswordHasherRepository passwordHasher)
         {
             _userRepository = userRepository
                 ?? throw new ArgumentNullException(nameof(userRepository));
+
+            _passwordHasher = passwordHasher
+                ?? throw new ArgumentNullException(nameof(passwordHasher));
         }
 
         public IEnumerable<UserResponse> GetAllUsers()
@@ -41,6 +45,8 @@ namespace FCG.Application.Services
                 throw new ValidationException("E-mail already used by another active user. Try another one.");
 
             var userEntity = user.ToEntity();
+            userEntity.SetPassword(user.Password, _passwordHasher);
+
             var userAdded = _userRepository.AddUser(userEntity);
             
             return userAdded.ToResponse();
@@ -48,12 +54,17 @@ namespace FCG.Application.Services
 
         public UserResponse UpdateUser(UserRequest user)
         {
-            var activeUsers = _userRepository.GetAllUsers().Where(u => u.IsActive && u.UserId != user.UserId);
+            var activeUsers = _userRepository.GetAllUsers().Where(u => u.IsActive);
 
-            if (activeUsers.Any(u => u.Email == user.Email.ToLower()))
+            if (!activeUsers.Any(u => u.UserId == user.UserId.ToUpper()))
+                throw new KeyNotFoundException($"User with ID {user.UserId} not found.");
+
+            if (activeUsers.Any(u => u.UserId != user.UserId && u.Email == user.Email.ToLower()))
                 throw new ValidationException("E-mail already used by another active user. Try another one.");
 
             var userEntity = user.ToEntity();
+            userEntity.SetPassword(user.Password, _passwordHasher);
+
             var userUpdated = _userRepository.UpdateUser(userEntity);
 
             return userUpdated.ToResponse();
@@ -68,7 +79,7 @@ namespace FCG.Application.Services
         {
             var userFound = _userRepository.GetUserById(userId.ToUpper());
 
-            if (userFound != null && userFound.Password == password)
+            if (userFound != null && _passwordHasher.VerifyPassword(password, userFound.PasswordHash))
                 return userFound;
             else
                 throw new UnauthorizedAccessException("User or password invalid.");

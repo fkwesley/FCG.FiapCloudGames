@@ -1,4 +1,5 @@
-﻿using FCG.Application.DTO.Auth;
+﻿using FCG.API.Models;
+using FCG.Application.DTO.Auth;
 using FCG.Application.Interfaces;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -24,8 +25,8 @@ namespace FCG.API.Controllers
         /// </summary>
         /// <returns>JWT Token</returns>
         [HttpPost("Login")]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
         public IActionResult Login([FromBody] LoginRequest login)
         {
             var user = _userService.ValidateCredentials(login.UserId, login.Password);
@@ -35,7 +36,7 @@ namespace FCG.API.Controllers
 
             var token = _authService.GenerateToken(user);
 
-            return Ok(new { token });
+            return Ok(token);
         }
     }
 }

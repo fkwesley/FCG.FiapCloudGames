@@ -7,13 +7,8 @@ using System.Threading.Tasks;
 
 namespace FCG.Application.DTO.Auth
 {
-    public class LoginRequest
+    public class LoginResponse
     {
-        [Required]
-        [MaxLength(60)]
-        public string UserId { get; set; }
-
-        [Required]
-        public string Password { get; set; }
+        public string Token{ get; set; }
     }
 }

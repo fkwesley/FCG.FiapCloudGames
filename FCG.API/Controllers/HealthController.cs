@@ -1,4 +1,5 @@
-﻿using FCG.Application.DTO.User;
+﻿using FCG.API.Models;
+using FCG.Application.DTO.User;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FCG.FiapCloudGames.Controllers
@@ -12,7 +13,7 @@ namespace FCG.FiapCloudGames.Controllers
         /// </summary>
         /// <returns>No content</returns>
         [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [HttpPost(Name = "Health")]
         public IActionResult Health()
         {

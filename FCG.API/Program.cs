@@ -7,6 +7,7 @@ using FCG.Domain.Repositories;
 using FCG.Infrastructure.Context;
 using FCG.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -119,6 +120,7 @@ builder.Services.AddSwaggerGen(c =>
 #region dependencyInjection
 // Dependency Injection for Application Layer
 builder.Services.AddSingleton<IAuthService>(new AuthService(jwtKey, jwtIssuer));
+builder.Services.AddSingleton<IPasswordHasherRepository, PasswordHasherRepository>();
 
 //services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -142,6 +144,32 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+#endregion
+
+#region invalidModel
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var errors = context.ModelState
+            .Where(x => x.Value?.Errors.Count > 0)
+            .Select(x =>
+            {
+                var field = x.Key;
+                var messages = x.Value!.Errors.Select(e => e.ErrorMessage);
+                return $"{field}: {string.Join(" | ", messages)}";
+            });
+
+        var response = new ErrorResponse
+        {
+            Message = "One or more validation errors occurred.",
+            Detail = string.Join(" || ", errors),
+            LogId = null
+        };
+
+        return new BadRequestObjectResult(response);
+    };
+});
 #endregion
 
 #endregion services

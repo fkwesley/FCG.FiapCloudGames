@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FCG.Infrastructure.Migrations
 {
     [DbContext(typeof(FiapCloudGamesDbContext))]
-    [Migration("20250601023710_migration-1")]
-    partial class migration1
+    [Migration("20250602035235_migration-2")]
+    partial class migration2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -119,12 +119,12 @@ namespace FCG.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Genre")
                         .IsRequired()
@@ -181,10 +181,10 @@ namespace FCG.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -192,18 +192,6 @@ namespace FCG.Infrastructure.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("User", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "ADMIN",
-                            CreatedAt = new DateTime(2025, 6, 1, 2, 37, 10, 490, DateTimeKind.Utc).AddTicks(7418),
-                            Email = "admin@fiap.com",
-                            IsActive = true,
-                            IsAdmin = true,
-                            Name = "APPLICATION ADMIN",
-                            Password = "Password1*"
-                        });
                 });
 
             modelBuilder.Entity("FCG.Domain.Entities.RequestLog", b =>

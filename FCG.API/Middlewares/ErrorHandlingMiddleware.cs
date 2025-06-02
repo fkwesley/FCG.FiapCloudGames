@@ -3,9 +3,6 @@ using FCG.Application.Exceptions;
 using FCG.Application.Interfaces;
 using FCG.Domain.Entities;
 using FCG.Domain.Exceptions;
-using FCG.Domain.Enums;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using LogLevel = FCG.Domain.Enums.LogLevel;
 

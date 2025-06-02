@@ -36,12 +36,12 @@ namespace FCG.Infrastructure.Migrations
                 {
                     UserId = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsAdmin = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -97,11 +97,6 @@ namespace FCG.Infrastructure.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.InsertData(
-                table: "User",
-                columns: new[] { "UserId", "CreatedAt", "Email", "IsActive", "IsAdmin", "Name", "Password", "UpdatedAt" },
-                values: new object[] { "ADMIN", new DateTime(2025, 6, 1, 2, 37, 10, 490, DateTimeKind.Utc).AddTicks(7418), "admin@fiap.com", true, true, "APPLICATION ADMIN", "Password1*", null });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Request_log_UserId",
                 table: "Request_log",
@@ -111,6 +106,21 @@ namespace FCG.Infrastructure.Migrations
                 name: "IX_Trace_log_LogId",
                 table: "Trace_log",
                 column: "LogId");
+
+            migrationBuilder.Sql(@"
+                INSERT INTO [FiapCloudGamesDb].[dbo].[User] 
+                    (UserId, Name, Email, PasswordHash, IsAdmin, IsActive, CreatedAt)
+                VALUES 
+                (
+                    'ADMIN',
+                    'APPLICATION ADMIN',
+                    'admin@fiap.com',
+                    'VZYni2gTkiLsQ3RxHvZsbw==.JIPyFqzQRRo3FTRdyDwJNznnQbibLSHjLwMM9Fc6rXM=',
+                    1,
+                    1,
+                    GETUTCDATE()
+                );
+            ");
         }
 
         /// <inheritdoc />

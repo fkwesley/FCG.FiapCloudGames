@@ -1,6 +1,5 @@
 ﻿using FCG.Application.Interfaces;
 using FCG.Domain.Entities;
-using FCG.FiapCloudGames.Core.Entities;
 using System.Diagnostics;
 
 namespace FCG.API.Middlewares

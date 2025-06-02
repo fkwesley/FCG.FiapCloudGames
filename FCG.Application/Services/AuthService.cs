@@ -1,4 +1,5 @@
-﻿using FCG.Application.Interfaces;
+﻿using FCG.Application.DTO.Auth;
+using FCG.Application.Interfaces;
 using FCG.FiapCloudGames.Core.Entities;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -22,7 +23,7 @@ namespace FCG.Application.Services
             _issuer = issuer;
         }
 
-        public string GenerateToken(User user)
+        public LoginResponse GenerateToken(User user)
         {
             // Cria os "claims" — dados embutidos no token
             var claims = new List<Claim>
@@ -48,7 +49,10 @@ namespace FCG.Application.Services
                 signingCredentials: creds
             );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return new LoginResponse()
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token)
+            };
         }
     }
 }

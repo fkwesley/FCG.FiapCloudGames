@@ -1,7 +1,6 @@
 ﻿using FCG.Domain.Entities;
 using FCG.Domain.Repositories;
 using FCG.Infrastructure.Context;
-using System;
 
 namespace FCG.Infrastructure.Repositories
 {

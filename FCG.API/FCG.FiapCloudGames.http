@@ -1,12 +1,12 @@
 @FCG.FiapCloudGames_HostAddress = https://localhost:7243
-@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiZnJhbmsudmllaXJhIiwiaXNfYWRtaW4iOiJ0cnVlIiwiZXhwIjoxNzQ4NjQ1ODA3LCJpc3MiOiJGQ0cuRmlhcENsb3VkR2FtZXMifQ.imsYN5j1ozODreqJZzmu-UGbLkfpzeFaK0te410F6WI
+@access_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBRE1JTiIsInVzZXJfaWQiOiJBRE1JTiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJBUFBMSUNBVElPTiBBRE1JTiIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzQ4ODM3MTMwLCJpc3MiOiJGQ0cuRmlhcENsb3VkR2FtZXMifQ.bgqbz1hZy7Bz-ew4Seq6J9dfgciIuArJvjmSdndJrxE
 
 ### Login (POST) - para gerar o token
 POST {{FCG.FiapCloudGames_HostAddress}}/auth/login
 Content-Type: application/json
 {
-  "userId": "frank.vieira",
-  "password": "teste123"
+  "userId": "admin",
+  "password": "Admin@123"
 }
 
 ###
@@ -17,3 +17,5 @@ Accept: text/plain
 
 ###
 GET {{FCG.FiapCloudGames_HostAddress}}/games/1
+Authorization: Bearer {{access_token}}
+Accept: text/plain

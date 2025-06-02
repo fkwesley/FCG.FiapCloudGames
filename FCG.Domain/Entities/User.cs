@@ -1,5 +1,6 @@
 ﻿using FCG.Domain.Entities;
 using FCG.Domain.Exceptions;
+using FCG.Domain.Repositories;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
@@ -10,12 +11,15 @@ namespace FCG.FiapCloudGames.Core.Entities
         [DebuggerDisplay("UserId: {UserId}, Name: {Name}, IsActive: {IsActive}")]
         public required string UserId { get; set; }
         public required string Name { get; set; }
-        private string _email { get; set; }         
-        private string _password { get; set; }
+
+        private string _email { get; set; }
+        public string PasswordHash { get; private set; }
+
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool IsAdmin { get; set; } = false;
+        public ICollection<RequestLog> RequestLogs { get; set; } = new List<RequestLog>();
 
         // Propriedade pública com validação de e-mail no `set`.
         public string Email
@@ -29,18 +33,15 @@ namespace FCG.FiapCloudGames.Core.Entities
             }
         }
 
-        // Propriedade pública com validação de senha forte no `set`.
-        public string Password
+        public void SetPassword(string plainPassword, IPasswordHasherRepository passwordHasher)
         {
-            get => _password;
-            set
-            {
-                if (!StrongPasswordRegex.IsMatch(value)) // Se não for uma senha segura...
-                    throw new BusinessException("Password must be at least 8 characters and include letters, numbers and special characters."); // ...lança exceção.
-                _password = value; // Se válida, atribui ao campo privado.
-            }
+            if (!StrongPasswordRegex.IsMatch(plainPassword))
+                throw new BusinessException("Password must be at least 8 characters and include letters, numbers and special characters.");
+
+            PasswordHash = passwordHasher.HashPassword(plainPassword);
         }
 
+        #region BusinessRules
         // Expressão regular para validar formato básico de e-mail.
         // Garante que tenha algo antes e depois de @ e depois um ponto.
         private static readonly Regex EmailRegex =
@@ -53,8 +54,8 @@ namespace FCG.FiapCloudGames.Core.Entities
         // - Mínimo de 8 caracteres
         private static readonly Regex StrongPasswordRegex =
             new(@"^(?=.*[a-zA-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).{8,}$", RegexOptions.Compiled);
+        #endregion
 
-        public ICollection<RequestLog> RequestLogs { get; set; } = new List<RequestLog>();
 
     }
 }

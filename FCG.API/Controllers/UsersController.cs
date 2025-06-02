@@ -1,3 +1,4 @@
+using FCG.API.Models;
 using FCG.Application.DTO.Game;
 using FCG.Application.DTO.User;
 using FCG.Application.Interfaces;
@@ -26,10 +27,10 @@ namespace FCG.FiapCloudGames.Controllers
         /// <returns>List of Users</returns>
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<UserResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public IActionResult GetAll()
         {
             var games = _userService.GetAllUsers();
@@ -42,10 +43,10 @@ namespace FCG.FiapCloudGames.Controllers
         /// <returns>Object User</returns>
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public IActionResult GetById(string id)
         {
             try
@@ -67,10 +68,10 @@ namespace FCG.FiapCloudGames.Controllers
         /// <returns>Object User added</returns>
         [HttpPost(Name = "Users")]
         [ProducesResponseType(typeof(UserResponse), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public IActionResult Add([FromBody] UserRequest user)
         {
             if (user.Name.ToLower() == "error 500 fake")
@@ -88,11 +89,11 @@ namespace FCG.FiapCloudGames.Controllers
         /// <returns>Object User updated</returns>
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public IActionResult Update(string id, [FromBody] UserRequest user)
         {
             user.UserId = id;
@@ -108,10 +109,10 @@ namespace FCG.FiapCloudGames.Controllers
         /// <returns>No content</returns>
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public IActionResult Delete(string id)
         {
             var deleted = _userService.DeleteUser(id);

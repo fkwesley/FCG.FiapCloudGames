@@ -18,9 +18,12 @@ namespace FCG.Application.Helpers
         {
             if (utcDateTime.Kind != DateTimeKind.Utc)
                 throw new ArgumentException("A data deve ser do tipo UTC.", nameof(utcDateTime));
-            
+
             var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
-            return TimeZoneInfo.ConvertTimeFromUtc(utcDateTime, timeZoneInfo);
+            var converted = TimeZoneInfo.ConvertTimeFromUtc(utcDateTime, timeZoneInfo);
+
+            // Especificar que o Kind é Local (ou seja, "horário local do sistema")
+            return DateTime.SpecifyKind(converted, DateTimeKind.Local);
         }
 
         /// <summary>

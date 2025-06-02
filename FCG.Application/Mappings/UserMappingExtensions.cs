@@ -14,8 +14,7 @@ namespace FCG.Application.Mappings
             {
                 UserId = request.UserId.ToUpper(), 
                 Name = request.Name.ToUpper(),         
-                Email = request.Email.ToLower(),       
-                Password = request.Password, 
+                Email = request.Email.ToLower(),   
                 IsActive = request.IsActive,   
                 IsAdmin = request.IsAdmin              
             };
@@ -30,7 +29,7 @@ namespace FCG.Application.Mappings
                 UserId = entity.UserId,
                 Name = entity.Name,
                 Email = entity.Email,
-                Password = entity.Password,
+                PasswordHash = entity.PasswordHash, // Assuming PasswordHash is the password to be returned
                 IsActive = entity.IsActive,
                 CreatedAt = DateTimeHelper.ConvertUtcToTimeZone(entity.CreatedAt, "E. South America Standard Time"),
                 UpdatedAt = entity.UpdatedAt.HasValue ? 

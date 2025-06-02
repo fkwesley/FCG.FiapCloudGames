@@ -32,24 +32,9 @@ namespace FCG.Infrastructure.Repositories
 
         public User UpdateUser(User user)
         {
-            var existingUser = GetUserById(user.UserId);
-
-            if (existingUser != null)
-            {
-                existingUser.Name = user.Name;
-                existingUser.Email = user.Email;
-                existingUser.Password = user.Password;
-                existingUser.IsActive = user.IsActive;
-                existingUser.IsAdmin = user.IsAdmin;
-                existingUser.UpdatedAt = DateTime.UtcNow;
-                
-                _context.Users.Update(existingUser);
-                _context.SaveChanges();
-
-                return existingUser;
-            }
-            else
-                throw new KeyNotFoundException($"User with ID {user.UserId} not found.");
+            _context.Users.Update(user);
+            _context.SaveChanges();
+            return user;
         }
 
         public bool DeleteUser(string id)
