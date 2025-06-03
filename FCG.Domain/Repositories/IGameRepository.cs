@@ -2,7 +2,7 @@
 
 namespace FCG.Domain.Repositories
 {
-    internal interface IGameRepository
+    public interface IGameRepository
     {
         IEnumerable<Game> GetAllGames();
         Game GetGameById(int id);

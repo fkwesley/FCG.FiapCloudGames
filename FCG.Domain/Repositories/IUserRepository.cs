@@ -2,12 +2,12 @@
 
 namespace FCG.Domain.Repositories
 {
-    internal interface IUserRepository
+    public interface IUserRepository
     {
         IEnumerable<User> GetAllUsers();
-        User GetUserById(int id);
+        User? GetUserById(string userId);
         User AddUser(User User);
         User UpdateUser(User User);
-        bool DeleteUser(int id);
+        bool DeleteUser(string userId);
     }
 }
