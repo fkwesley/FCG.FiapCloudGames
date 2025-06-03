@@ -1,9 +1,8 @@
-﻿# FCG.FiapCloudGames
-# 🎮 Fiap Cloud Games API
+﻿# 🎮 FCG.FiapCloudGames.API
 
 API desenvolvida para gerenciamento de usuários e jogos, com foco em boas práticas de arquitetura DDD, autenticação segura, validação robusta e testes automatizados.
 
----
+
 
 ## 📌 Objetivo
 
@@ -23,12 +22,12 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
 - Testes unitários com TDD 
 - Documententação Swagger com Swashbuckle.AspNetCore
 
----
+
 
 ## 🚀 Tecnologias Utilizadas
 
 | Tecnologia        | Versão/Detalhes                  |
-|-------------------|----------------------------------|
+|-|-|
 | .NET              | .NET 8                           |
 | C#                | 12                               |
 | Entity Framework  | Core, com Migrations             |
@@ -39,7 +38,7 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
 | Segurança         | PBKDF2 + salt com SHA256         |
 | Logger            | Middleware de Request/Response + LogId |
 
----
+
 
 ## 🧠 Padrões e Boas Práticas
 
@@ -49,7 +48,7 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
 - Tratamento global de exceções via middleware
 - DTOs com validações automáticas via DataAnnotations
 
----
+
 
 ## ✅ Principais Funcionalidades
 
@@ -74,7 +73,7 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
 - ✅ Registro de logs com `RequestId` único
 - ✅ Token JWT com verificação de permissões por endpoint
 
----
+
 
 ## 🧪 Testes
 
@@ -85,46 +84,109 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
   - Serviços e repositórios mockados
 - ✅ Cobertura de cenários felizes e inválidos
 
----
 
-## 🛠️ Setup do Projeto
-
-### Pré-requisitos
+## ⚙️ Pré-requisitos
 - .NET 8 SDK instalado
 - SQL Server
 
+## 🛠️ Setup do Projeto
+Siga esses passos para configurar e rodar o projeto localmente:
+
+### 
 - Clonar o repositório
-- Configurar a conexão com o banco de dados no `appsettings.json`
-- Executar as migrations para criar o banco de dados:
   ```bash
-  dotnet ef database update
+  git clone https://github.com/seu-usuario/fiap-cloud-games.git
+  ```
+- Configurar a conexão com o banco de dados no `appsettings.json`
+  ```json
+  {
+    "ConnectionStrings": {
+      "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=FiapCloudGamesDb;Trusted_Connection=True;"
+    },
+    "Jwt": {
+      "Key": "sua-chave-secreta-supersegura",
+      "Issuer": "FiapCloudGames",
+      "Audience": "FiapCloudGamesUsers"
+    }
+  }
+  ```
+- Executar as migrations para criar o banco de dados, passando a connectionString
+  ```bash
+  Update-Database -Project FCG.Infrastructure -StartupProject FCG.API -Connection "Server=(localdb)\(instance);Database=FiapCloudGamesDb;Trusted_Connection=True;TrustServerCertificate=True"
+  ```
+- Rodar Testes
+  ```bash
+  dotnet test
   ```
 - Executar a aplicação
   ```bash
   dotnet run --project FCG.API
   ```
-- Acessar a documentação Swagger em `http://localhost:<porta>/swagger`
-- 
----
+- Acessar a documentação Swagger em `http://localhost:<porta>/swagger/index.html`
+
  ## 🔐 Autenticação e Autorização
 
 - Faça login com um usuário existente via /auth/login
 - Use o token Bearer retornado no header Authorization das demais requisições protegidas.
 
----
+
  ## 📁 Estrutura de Pastas
 
  ```bash
-/FCG.API				>> API principal com controllers e configuração de middleware
-/FCG.Application		>> Camada de aplicação com serviços e DTOs
-/FCG.Domain				>> Camada de domínio com entidades, repositórios e regras de negócio
-/FCG.Infrastructure		>> Camada de infraestrutura com acesso a dados e implementação de repositórios
-/FCG.Tests				>> Projeto de testes unitários
+FCG.FiapCloudGames/
+│
+├── FCG.API/                        # Camada de apresentação (Controllers, Middlewares, Program.cs)
+│   ├── Controllers/                # Endpoints REST
+│   ├── Middleware/                 # Tratamento de erros, logs, etc.
+│   └── Program.cs                  # Ponto de entrada da aplicação
+│
+├── FCG.Application/                # Camada de aplicação (DTOs, serviços, interfaces de uso)
+│   ├── Interfaces/                 # Interfaces usadas pela API
+│   ├── Services/                   # Serviços que coordenam o domínio
+│   └── DTOs/                       # Objetos de transferência de dados
+│
+├── FCG.Domain/                     # Camada de domínio (regra de negócio, entidades, contratos)
+│   ├── Entities/                   # Entidades como User e Game
+│   ├── Exceptions/                 # Exceções do domínio
+│   ├── Repositories/               # Interfaces dos repositórios (sem dependência de EF)
+│
+├── FCG.Infrastructure/             # Implementações (EF, hashing, repositórios concretos)
+│   ├── Context/                    # DbContext do Entity Framework
+│   ├── Mappings/                   # Configurações de entidades (Fluent API)
+│   ├── Repositories/               # Repositórios que implementam a camada de domínio
+│   └── Migrations/                 # Histórico de migrations geradas
+│
+├── FCG.Tests/                      # Testes automatizados (xUnit)
+│   ├── UnitTests/                  # Testes Unitários
+│       ├── Domain/                 # Testes de entidades, regex e regras
+│       ├── Application/            # Testes de serviços (ex: UserService)
+│       ├── Infrastructure/         # Testes de hashing, token, etc.
+│       └── Helpers/                # Setup de mocks e objetos fake
+│   ├── IntegrationTests/           # Testes de Integração
+│
+└── README.md                       # Este arquivo
  ```
 
- ---
+## 🔗 Diagrama de Relacionamento (Simplificado)
+```plaintext
++------------------+           +--------------------+           +------------------+            +------------------+
+|     Users        |<--------->|   Request_log      |<--------->|    Trace_log     |            |      Games       |
++------------------+   (1:N)   +--------------------+   (1:N)   +------------------+            +------------------+
+| UserId (PK)      |           | LogId (PK)         |           | TraceId (PK)     |            | GameId (PK)      |
+| Name             |           | UserId (FK)        |           | LogId (FK)       |            | Name             |
+| Email            |           | HttpMethod         |           | Timestamp        |            | Description      |
+| PasswordHash     |           | Path               |           | Level            |            | Genre            |
+| IsActive         |           | StatusCode         |           | Message          |            | ReleaseDate      |
+| CreatedAt        |           | RequestBody        |           | StackTrace       |            | CreatedAt        |
+| UpdatedAt        |           | ResponseBody       |           +------------------+            | UpdatedAt        |
+| IsAdmin          |           | StartDate          |                                           | Rating           |
++------------------+           | EndDate            |                                           +------------------+ 
+                               | Duration           |
+                               +--------------------+       
+```
+ 
  ## ✍️ Autor
-Frank Vieira
-GitHub: @fkwesley
-Projeto desenvolvido para fins educacionais no curso da FIAP.
+- Frank Vieira
+- GitHub: @fkwesley
+- Projeto desenvolvido para fins educacionais no curso da FIAP.
  
