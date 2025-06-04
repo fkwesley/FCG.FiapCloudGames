@@ -49,15 +49,8 @@ namespace FCG.FiapCloudGames.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public IActionResult GetById(string id)
         {
-            try
-            {
-                var game = _userService.GetUserById(id);
-                return Ok(game);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            var game = _userService.GetUserById(id);
+            return Ok(game);
         }
         #endregion
 
