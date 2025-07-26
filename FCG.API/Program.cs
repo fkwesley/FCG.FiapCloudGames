@@ -178,11 +178,9 @@ var app = builder.Build();
 
 #region middlewares
 // middleware para uso do swagger
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 // Middleware que valida autenticação JWT em cada requisição
 app.UseAuthentication();
