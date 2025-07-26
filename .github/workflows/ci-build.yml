@@ -29,5 +29,6 @@ jobs:
       - name: Build
         run: dotnet build FCG.FiapCloudGames.sln --configuration Release --no-restore
 
-      - name: Testes unitários com cobertura
-        run: dotnet test FCG.FiapCloudGames.sln --no-build --verbosity normal --collect:"XPlat Code Coverage"
+      - name: Unit Tests with Coverage
+        run: dotnet test FCG.FiapCloudGames.sln --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
+
