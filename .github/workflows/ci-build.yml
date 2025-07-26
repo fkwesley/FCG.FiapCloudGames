@@ -1,34 +1,42 @@
-name: CI - Build and Test
+name: CI - Build, Test, Build Docker Image to ACR
 
 on:
   push:
     branches:
       - master
-      - Fase2 
+      - Fase2
   pull_request:
     branches:
       - master
       - Fase2
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout código
-        uses: actions/checkout@v4
+    - name: Checkout Code
+      uses: actions/checkout@v4
 
-      - name: Setup .NET 8.0
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: 8.0.x
+    - name: Setup .NET 8.0
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
 
-      - name: Restore
-        run: dotnet restore FCG.FiapCloudGames.sln
+    - name: Restore
+      run: dotnet restore FCG.FiapCloudGames.sln
 
-      - name: Build
-        run: dotnet build FCG.FiapCloudGames.sln --configuration Release --no-restore
+    - name: Build
+      run: dotnet build FCG.FiapCloudGames.sln --configuration Release --no-restore
 
-      - name: Unit Tests with Coverage
-        run: dotnet test FCG.FiapCloudGames.sln --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
+    - name: Unit Tests with Coverage
+      run: dotnet test FCG.FiapCloudGames.sln --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
 
+    - name: Login to Azure Container Registry
+      run: echo ${{ secrets.AZURE_ACR_PASSWORD }} | docker login acrfcg.azurecr.io -u ${{ secrets.AZURE_ACR_USERNAME }} --password-stdin
+
+    - name: Build Docker image
+      run: docker build -t acrfcg.azurecr.io/fiapcloudgames/api:latest .
+
+    - name: Push Docker image to ACR
+      run: docker push acrfcg.azurecr.io/fiapcloudgames/api:latest
