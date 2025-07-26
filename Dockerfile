@@ -1,26 +1,30 @@
-# Use the official .NET 8 SDK image to build the application
+# Stage 1 - Build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+# Set working directory
 WORKDIR /app
 
-# Copy solution and project files
-COPY *.sln ./
-COPY *.csproj ./
+# Copy full solution and project folders
+# This assumes you are building from the root of the repository
+COPY . .
 
 # Restore NuGet packages
-RUN dotnet restore
+RUN dotnet restore FCG.FiapCloudGames.sln
 
-# Copy all remaining source code
-COPY . ./
+# Build the application in Release mode
+RUN dotnet build FCG.FiapCloudGames.sln -c Release --no-restore
 
-# Build and publish the application to the /out directory
-RUN dotnet publish -c Release -o /out
+# Publish the application
+RUN dotnet publish FCG.API/FCG.API.csproj -c Release -o /app/publish --no-restore
 
-# Use the ASP.NET 8 runtime image for the final container
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+# Stage 2 - Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+
+# Set working directory
 WORKDIR /app
 
-# Copy published output from the build stage
-COPY --from=build /out .
+# Copy published output from build stage
+COPY --from=build /app/publish .
 
-# Set the entry point to run the application
-ENTRYPOINT ["dotnet", "FCG.FiapCloudGames.dll"]
+# Set the entry point of the application
+ENTRYPOINT ["dotnet", "FCG.API.dll"]
