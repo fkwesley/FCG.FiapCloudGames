@@ -11,8 +11,9 @@ on:
       - Fase2
 
 jobs:
-  build-and-deploy:
+  build-and-publish-docker-image:
     runs-on: ubuntu-latest
+    environment: PRD
 
     steps:
     - name: Checkout Code
@@ -32,6 +33,10 @@ jobs:
     - name: Unit Tests with Coverage
       run: dotnet test FCG.FiapCloudGames.sln --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage"
 
+    - name: Replace connection string in appsettings.json
+      run: |
+        sed -i "s|SECRETS.DB_CONNECTION_STRING|${{ secrets.DB_CONNECTION_STRING }}|g" ./FCG.API/appsettings.json
+        
     - name: Login to Azure Container Registry
       run: echo ${{ secrets.AZURE_ACR_PASSWORD }} | docker login acrfcg.azurecr.io -u ${{ secrets.AZURE_ACR_USERNAME }} --password-stdin
 
