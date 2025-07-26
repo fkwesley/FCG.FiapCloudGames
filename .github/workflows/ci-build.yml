@@ -1,0 +1,30 @@
+name: CI - Build and Test
+
+on:
+  pull_request:
+    branches:
+      - master
+      - Fase2
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 8.0
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore FCG.FiapCloudGames.sln
+
+      - name: Build
+        run: dotnet build FCG.FiapCloudGames.sln --configuration Release --no-restore
+
+      - name: Testes unitários com cobertura
+        run: dotnet test FCG.FiapCloudGames.sln --no-build --verbosity normal --collect:"XPlat Code Coverage"

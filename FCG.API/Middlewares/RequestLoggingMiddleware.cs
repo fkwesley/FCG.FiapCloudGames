@@ -1,6 +1,9 @@
-﻿using FCG.Application.Interfaces;
+﻿using FCG.API.Models;
+using FCG.Application.Interfaces;
 using FCG.Domain.Entities;
+using FCG.Domain.Exceptions;
 using System.Diagnostics;
+using System.Text.Json;
 
 namespace FCG.API.Middlewares
 {
@@ -92,9 +95,24 @@ namespace FCG.API.Middlewares
                 await loggerService.UpdateRequestLogAsync(logEntry);
             }
             catch (Exception ex)
-            {
-                Console.WriteLine($"Erro ao logar request: {ex.Message}");
-                throw;
+            { 
+                // Configura o response da API para cliente
+                context.Response.ContentType = "application/json";
+
+                // Define status HTTP baseado no tipo da exceção
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+                var response = new ErrorResponse
+                {
+                    Message = "An error occurred processing your request.",
+                    Detail = ex.Message,
+                    LogId = requestId
+                };
+
+                var json = JsonSerializer.Serialize(response);
+
+                // Envia resposta para o cliente
+                await context.Response.WriteAsync(json);
             }
         }
     }

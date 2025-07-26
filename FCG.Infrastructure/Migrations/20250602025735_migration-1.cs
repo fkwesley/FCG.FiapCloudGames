@@ -107,6 +107,7 @@ namespace FCG.Infrastructure.Migrations
                 table: "Trace_log",
                 column: "LogId");
 
+            //Password1*
             migrationBuilder.Sql(@"
                 INSERT INTO [FiapCloudGamesDb].[dbo].[User] 
                     (UserId, Name, Email, PasswordHash, IsAdmin, IsActive, CreatedAt)
@@ -115,7 +116,7 @@ namespace FCG.Infrastructure.Migrations
                     'ADMIN',
                     'APPLICATION ADMIN',
                     'admin@fiap.com',
-                    'VZYni2gTkiLsQ3RxHvZsbw==.JIPyFqzQRRo3FTRdyDwJNznnQbibLSHjLwMM9Fc6rXM=',
+                    'HqLKSRF+nYGTXsi+rDoDLw==.+FU9lcsUoBSqMjFxJk10YYx7NVY3cDZ5sg372usZtvQ=', 
                     1,
                     1,
                     GETUTCDATE()

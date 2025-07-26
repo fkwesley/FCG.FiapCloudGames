@@ -27,6 +27,7 @@ namespace FCG.API.Controllers
         [HttpPost("Login")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public IActionResult Login([FromBody] LoginRequest login)
         {
             var user = _userService.ValidateCredentials(login.UserId, login.Password);
