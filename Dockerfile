@@ -1,16 +1,16 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build              # Imagem base com SDK .NET 8.0 para build
-WORKDIR /app                                                # Define diretório de trabalho
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build              # Base image with .NET 8.0 SDK for build
+WORKDIR /app                                                # Set working directory
 
-COPY *.sln .                                                # Copia o arquivo da solução para o container
-COPY FCG.FiapCloudGames/*.csproj ./FCG.FiapCloudGames/      # Copia o csproj do projeto principal
-RUN dotnet restore                                          # Restaura as dependências NuGet
+COPY *.sln .                                                # Copy solution file to the container
+COPY FCG.FiapCloudGames/*.csproj ./FCG.FiapCloudGames/      # Copy the main project .csproj file
+RUN dotnet restore                                          # Restore NuGet dependencies
 
-COPY FCG.FiapCloudGames/. ./FCG.FiapCloudGames/             # Copia todo o código fonte para o container
-WORKDIR /app/FCG.FiapCloudGames                             # Navega para a pasta do projeto
-RUN dotnet publish -c Release -o out                        # Publica a aplicação em Release na pasta out
+COPY FCG.FiapCloudGames/. ./FCG.FiapCloudGames/             # Copy all source code to the container
+WORKDIR /app/FCG.FiapCloudGames                             # Navigate to the project folder
+RUN dotnet publish -c Release -o out                        # Publish the application in Release mode to the 'out' folder
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0                    # Imagem runtime leve com ASP.NET Core
-WORKDIR /app                                                # Define diretório de trabalho para runtime
-COPY --from=build /app/FCG.FiapCloudGames/out ./            # Copia os arquivos publicados da build
+FROM mcr.microsoft.com/dotnet/aspnet:8.0                    # Lightweight runtime image with ASP.NET Core
+WORKDIR /app                                                # Set working directory for runtime
+COPY --from=build /app/FCG.FiapCloudGames/out ./            # Copy published files from the build stage
 
-ENTRYPOINT ["dotnet", "FCG.FiapCloudGames.dll"]             # Comando para iniciar a aplicação
+ENTRYPOINT ["dotnet", "FCG.FiapCloudGames.dll"]             # Command to start the application
