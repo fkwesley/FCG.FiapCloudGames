@@ -24,6 +24,9 @@ var configuration = new ConfigurationBuilder()
 
 var jwtKey = configuration["Jwt:Key"];
 var jwtIssuer = configuration["Jwt:Issuer"];
+
+var connectionString = Environment.GetEnvironmentVariable("FiapCloudGamesDbConnection") 
+                            ?? configuration.GetConnectionString("FiapCloudGamesDbConnection");
 #endregion
 
 #region services
@@ -135,7 +138,7 @@ builder.Services.AddScoped<ILoggerRepository, LoggerRepository>();
 // Register the DbContext with dependency injection
 builder.Services.AddDbContext<FiapCloudGamesDbContext>(options =>
 {
-    options.UseSqlServer(configuration.GetConnectionString("FiapCloudGamesDbConnection"));
+    options.UseSqlServer(connectionString);
 }, ServiceLifetime.Scoped);
 #endregion
 
