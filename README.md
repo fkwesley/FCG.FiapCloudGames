@@ -1,7 +1,7 @@
 ﻿# 🎮 FCG.FiapCloudGames.API
 
 API desenvolvida para gerenciamento de usuários e jogos, com foco em boas práticas de arquitetura DDD, autenticação segura, validação robusta e testes automatizados.
-
+- Hospedada na Azure usando Container Apps e imagem publicada no ACR (Azure Container Registry).
 
 
 ## 📌 Objetivo
@@ -23,7 +23,6 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
 - Documententação Swagger com Swashbuckle.AspNetCore
 
 
-
 ## 🚀 Tecnologias Utilizadas
 
 | Tecnologia        | Versão/Detalhes                  |
@@ -39,6 +38,34 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
 | Logger            | Middleware de Request/Response + LogId |
 
 
+## 🚀 Pipeline CI/CD
+
+O workflow está definido em `.github/workflows/ci-cd-fcg.yml`. 
+Automatizando os seguintes passos:
+
+1. Build e testes unitários
+2. Build da imagem Docker
+3. Push para Azure Container Registry (ACR)
+4. Deploy automatizado para Azure Container Apps nas stages:
+   - DEV
+   - UAT (necessário aprovação)
+   - PRD (apenas com PR na branch `master` e necessário aprovação)
+   
+
+## ☁️ Infraestrutura na Azure
+
+O projeto utiliza os seguintes recursos na Azure:
+
+- **Azure Resource Group**: `RG_FCG`
+- **Azure SQL Database**: `fiapcloudgamesdb`
+- **Azure Container Registry (ACR)**: `acrfcg.azurecr.io`
+- **Azure Container Apps**:
+  - DEV: `aca-fcg-dev` 
+  - UAT: `aca-fcg-uat` 
+  - PRD: `aca-fcg` 
+
+As variáveis de ambiente sensíveis (como strings de conexão) são gerenciadas via Azure e GitHub Secrets.
+
 
 ## 🧠 Padrões e Boas Práticas
 
@@ -47,7 +74,6 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
 - Injeção de dependência configurada via Program.cs
 - Tratamento global de exceções via middleware
 - DTOs com validações automáticas via DataAnnotations
-
 
 
 ## ✅ Principais Funcionalidades
@@ -74,7 +100,6 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
 - ✅ Token JWT com verificação de permissões por endpoint
 
 
-
 ## 🧪 Testes
 
 - ✅ Testes unitários completos de:
@@ -89,6 +114,7 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
 - .NET 8 SDK instalado
 - SQL Server
 
+- 
 ## 🛠️ Setup do Projeto
 Siga esses passos para configurar e rodar o projeto localmente:
 
@@ -123,6 +149,7 @@ Siga esses passos para configurar e rodar o projeto localmente:
   dotnet run --project FCG.API
   ```
 - Acessar a documentação Swagger em `http://localhost:<porta>/swagger/index.html`
+
 
  ## 🔐 Autenticação e Autorização
 
@@ -167,6 +194,7 @@ FCG.FiapCloudGames/
 └── README.md                       # Este arquivo
  ```
 
+
 ## 🔗 Diagrama de Relacionamento (Simplificado)
 ```plaintext
 +------------------+           +--------------------+           +------------------+            +------------------+
@@ -185,6 +213,7 @@ FCG.FiapCloudGames/
                                +--------------------+       
 ```
  
+
  ## ✍️ Autor
 - Frank Vieira
 - GitHub: @fkwesley
