@@ -38,35 +38,6 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
 | Logger            | Middleware de Request/Response + LogId |
 
 
-## 🚀 Pipeline CI/CD
-
-O workflow está definido em `.github/workflows/ci-cd-fcg.yml`. 
-Automatizando os seguintes passos:
-
-1. Build e testes unitários
-2. Build da imagem Docker
-3. Push para Azure Container Registry (ACR)
-4. Deploy automatizado para Azure Container Apps nas stages:
-   - DEV
-   - UAT (necessário aprovação)
-   - PRD (apenas com PR na branch `master` e necessário aprovação)
-   
-
-## ☁️ Infraestrutura na Azure
-
-O projeto utiliza os seguintes recursos na Azure:
-
-- **Azure Resource Group**: `RG_FCG`
-- **Azure SQL Database**: `fiapcloudgamesdb`
-- **Azure Container Registry (ACR)**: `acrfcg.azurecr.io`
-- **Azure Container Apps**:
-  - DEV: `aca-fcg-dev` 
-  - UAT: `aca-fcg-uat` 
-  - PRD: `aca-fcg` 
-
-As variáveis de ambiente sensíveis (como strings de conexão) são gerenciadas via Azure e GitHub Secrets.
-
-
 ## 🧠 Padrões e Boas Práticas
 
 - Camadas separadas por responsabilidade (Domain, Application, Infrastructure, API)
@@ -114,7 +85,7 @@ As variáveis de ambiente sensíveis (como strings de conexão) são gerenciadas
 - .NET 8 SDK instalado
 - SQL Server
 
-- 
+
 ## 🛠️ Setup do Projeto
 Siga esses passos para configurar e rodar o projeto localmente:
 
@@ -213,6 +184,35 @@ FCG.FiapCloudGames/
                                +--------------------+       
 ```
  
+ 
+## 🚀 Pipeline CI/CD
+
+O workflow está definido em `.github/workflows/ci-cd-fcg.yml`. 
+Automatizando os seguintes passos:
+
+- Build e testes unitários
+- Build da imagem Docker
+- Push para Azure Container Registry (ACR)
+- Deploy automatizado para Azure Container Apps nas stages:
+   - DEV
+   - UAT (necessário aprovação)
+   - PRD (apenas com PR na branch `master` e necessário aprovação)
+   
+
+## ☁️ Infraestrutura na Azure
+
+O projeto utiliza os seguintes recursos na Azure:
+
+- **Azure Resource Group**: `RG_FCG`
+- **Azure SQL Database**: `fiapcloudgamesdb`
+- **Azure Container Registry (ACR)**: `acrfcg.azurecr.io`
+- **Azure Container Apps**:
+  - DEV: `aca-fcg-dev` 
+  - UAT: `aca-fcg-uat` 
+  - PRD: `aca-fcg` 
+
+As variáveis de ambiente sensíveis (como strings de conexão) são gerenciadas via Azure e GitHub Secrets.
+
 
  ## ✍️ Autor
 - Frank Vieira

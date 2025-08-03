@@ -3,7 +3,7 @@ import { check, sleep } from 'k6';
 
 export let options = {
     vus: 5,           // 10 usuários simultâneos
-    iterations: 5,   // Total de 100 requisições
+    iterations: 200,   // Total de 100 requisições
 };
 
 // 🔐 Autenticação única
@@ -19,7 +19,7 @@ export function setup() {
     };
 
     const loginRes = http.post(
-        'https://aca-fcg.agreeablemushroom-99bd6ac3.brazilsouth.azurecontainerapps.io/Auth/Login',
+        'https://aca-fcg-dev.agreeablemushroom-99bd6ac3.brazilsouth.azurecontainerapps.io/Auth/Login',
         loginPayload,
         { headers: loginHeaders }
     );
@@ -48,7 +48,7 @@ export default function (data) {
     };
 
     const userRes = http.get(
-        'https://aca-fcg.agreeablemushroom-99bd6ac3.brazilsouth.azurecontainerapps.io/Games',
+        'https://aca-fcg-dev.agreeablemushroom-99bd6ac3.brazilsouth.azurecontainerapps.io/Games',
         { headers: userHeaders }
     );
 
