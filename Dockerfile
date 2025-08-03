@@ -15,9 +15,10 @@ ENV NEW_RELIC_LICENSE_KEY=""
 ENV NEW_RELIC_APP_NAME=""
 
 # Install New Relic dependencies
-RUN apt-get update && apt-get install -y wget unzip \
-  && wget https://download.newrelic.com/dot_net_agent/latest_release/newrelic-netcore20-agent.zip \
-  && unzip newrelic-netcore20-agent.zip -d /newrelic-netcore20-agent
+RUN apt-get update && apt-get install -y wget tar \
+  && wget https://download.newrelic.com/.net_agent/latest_release/NewRelic-dotnet-agent-linux-x64.tar.gz \
+  && mkdir /newrelic-netcore20-agent \
+  && tar -xzf NewRelic-dotnet-agent-linux-x64.tar.gz -C /newrelic-netcore20-agent
 
 # Copy full solution and project folders
 # This assumes you are building from the root of the repository
