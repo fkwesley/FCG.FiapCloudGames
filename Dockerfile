@@ -4,22 +4,6 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 # Set working directory
 WORKDIR /app
 
-# Set the environment variables for New Relic
-ENV CORECLR_ENABLE_PROFILING=1
-ENV CORECLR_PROFILER="{36032161-FFC0-4B61-B559-F6C5D41BAE5A}"
-ENV CORECLR_PROFILER_PATH="/newrelic-netcore20-agent/libNewRelicProfiler.so"
-ENV NEW_RELIC_DISTRIBUTED_TRACING_ENABLED=true
-
-# this variables are replaced at runtime ci-cd pipeline
-ENV NEW_RELIC_LICENSE_KEY=""
-ENV NEW_RELIC_APP_NAME=""
-
-# Install New Relic dependencies
-RUN apt-get update && apt-get install -y wget tar \
-  && wget https://download.newrelic.com/agents/dotnet-agent/newrelic-dotnet-agent_x64_linux.tar.gz \
-  && mkdir /newrelic-netcore20-agent \
-  && tar -xzf newrelic-dotnet-agent_x64_linux.tar.gz -C /newrelic-netcore20-agent
-
 # Copy full solution and project folders
 # This assumes you are building from the root of the repository
 COPY . .
@@ -38,6 +22,23 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 
 # Set working directory
 WORKDIR /app
+
+# Install the New Relic agent
+RUN apt-get update && apt-get install -y wget ca-certificates gnupg \
+  && echo 'deb http://apt.newrelic.com/debian/ newrelic non-free' | tee /etc/apt/sources.list.d/newrelic.list \
+  && wget https://download.newrelic.com/548C16BF.gpg \
+  && apt-key add 548C16BF.gpg \
+  && apt-get update \
+  && apt-get install -y 'newrelic-dotnet-agent' \
+  && rm -rf /var/lib/apt/lists/*
+
+# Set the environment variables for New Relic
+ENV CORECLR_ENABLE_PROFILING=1 \
+	CORECLR_PROFILER={36032161-FFC0-4B61-B559-F6C5D41BAE5A} \
+	CORECLR_NEWRELIC_HOME=/usr/local/newrelic-dotnet-agent \
+	CORECLR_PROFILER_PATH=/usr/local/newrelic-dotnet-agent/libNewRelicProfiler.so \
+	NEW_RELIC_LICENSE_KEY="" \
+	NEW_RELIC_APP_NAME=""
 
 # Copy published output from build stage
 COPY --from=build /app/publish .
