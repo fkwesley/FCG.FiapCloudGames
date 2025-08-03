@@ -58,9 +58,9 @@ jobs:
             --image acrfcg.azurecr.io/fiapcloudgames/api:latest \
             --set-env-vars \
                 "FiapCloudGamesDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
-                "NEW_RELIC_APP_NAME=${{ secrets.NEW_RELIC_APP_NAME }}" \
                 "NEW_RELIC_LICENSE_KEY=${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
-                "ASPNETCORE_ENVIRONMENT=${{ secrets.ENV }}"
+                "NEW_RELIC_APP_NAME=${{ vars.NEW_RELIC_APP_NAME }}" \
+                "ASPNETCORE_ENVIRONMENT=${{ vars.ENV }}"
 
   deploy-uat:
     needs: deploy-dev
@@ -81,9 +81,9 @@ jobs:
             --image acrfcg.azurecr.io/fiapcloudgames/api:latest \
             --set-env-vars \
                 "FiapCloudGamesDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
-                "NEW_RELIC_APP_NAME=${{ secrets.NEW_RELIC_APP_NAME }}" \
                 "NEW_RELIC_LICENSE_KEY=${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
-                "ASPNETCORE_ENVIRONMENT=${{ secrets.ENV }}"
+                "NEW_RELIC_APP_NAME=${{ vars.NEW_RELIC_APP_NAME }}" \
+                "ASPNETCORE_ENVIRONMENT=${{ vars.ENV }}"
 
   deploy-prd:
     needs: deploy-uat
@@ -105,7 +105,7 @@ jobs:
             --image acrfcg.azurecr.io/fiapcloudgames/api:latest \
             --set-env-vars \
                 "FiapCloudGamesDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
-                "NEW_RELIC_APP_NAME=${{ secrets.NEW_RELIC_APP_NAME }}" \
                 "NEW_RELIC_LICENSE_KEY=${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
-                "ASPNETCORE_ENVIRONMENT=${{ secrets.ENV }}"
+                "NEW_RELIC_APP_NAME=${{ vars.NEW_RELIC_APP_NAME }}" \
+                "ASPNETCORE_ENVIRONMENT=${{ vars.ENV }}"
 
