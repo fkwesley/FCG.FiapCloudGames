@@ -36,21 +36,21 @@ namespace FCG.Application.Services
         {
             var games = _gameRepository.GetAllGames();
 
-            // Cria um escopo DI novo para o log (isolado do contexto da requisição)
-            using var scope = _scopeFactory.CreateScope();
+            //// Cria um escopo DI novo para o log (isolado do contexto da requisição)
+            //using var scope = _scopeFactory.CreateScope();
 
-            // Pega o LoggerService do escopo novo
-            var loggerService = scope.ServiceProvider.GetRequiredService<ILoggerService>();
+            //// Pega o LoggerService do escopo novo
+            //var loggerService = scope.ServiceProvider.GetRequiredService<ILoggerService>();
 
-            // loga utilizando o novo scope criado
-            loggerService.LogTraceAsync(new Trace
-            {
-                LogId = _httpContext.HttpContext?.Items["RequestId"] as Guid?,
-                Timestamp = DateTime.UtcNow,
-                Level = LogLevel.Info,
-                Message = "Retrieved all games",
-                StackTrace = null
-            });
+            //// loga utilizando o novo scope criado
+            //loggerService.LogTraceAsync(new Trace
+            //{
+            //    LogId = _httpContext.HttpContext?.Items["RequestId"] as Guid?,
+            //    Timestamp = DateTime.UtcNow,
+            //    Level = LogLevel.Info,
+            //    Message = "Retrieved all games",
+            //    StackTrace = null
+            //});
 
             return games.Select(game => game.ToResponse()).ToList();
         }
