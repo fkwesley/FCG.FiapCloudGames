@@ -1,16 +1,17 @@
-﻿using Xunit;
-using Moq;
-using FluentAssertions;
-using FCG.Application.Services;
-using FCG.Domain.Repositories;
-using FCG.Application.DTO.Game;
-using FCG.Domain.Entities;
+﻿using FCG.Application.DTO.Game;
 using FCG.Application.Exceptions;
 using FCG.Application.Interfaces;
+using FCG.Application.Services;
+using FCG.Domain.Entities;
+using FCG.Domain.Repositories;
 using FCG.FiapCloudGames.Core.Entities;
+using FluentAssertions;
+using Microsoft.AspNetCore.Http;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Xunit;
 
 namespace FCG.Tests.UnitTests.FCG.Tests.Application.Services
 {
@@ -18,13 +19,15 @@ namespace FCG.Tests.UnitTests.FCG.Tests.Application.Services
     {
         private readonly Mock<IGameRepository> _gameRepositoryMock;
         private readonly Mock<ILoggerService> _loggerServiceMock;
+        private readonly Mock<IHttpContextAccessor> _httpContextMock;
         private readonly GameService _gameService;
 
         public GameServiceTests()
         {
             _gameRepositoryMock = new Mock<IGameRepository>();
             _loggerServiceMock = new Mock<ILoggerService>();
-            _gameService = new GameService(_gameRepositoryMock.Object, _loggerServiceMock.Object);
+            _httpContextMock = new Mock<IHttpContextAccessor>();
+            _gameService = new GameService(_gameRepositoryMock.Object, _loggerServiceMock.Object, _httpContextMock.Object);
         }
 
         [Fact]

@@ -2,8 +2,9 @@
 import { check, sleep } from 'k6';
 
 export let options = {
-    vus: 5,           // 10 usuários simultâneos
-    iterations: 500,   // Total de 100 requisições
+    vus: 10,           // 10 usuários simultâneos
+    //iterations: 500,   // Total de 100 requisições
+    duration: '10m',  // Use essa linha para rodar por tempo (ex: 10 minutos)
 };
 
 // 🔐 Autenticação única

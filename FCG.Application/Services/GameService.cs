@@ -6,6 +6,8 @@ using FCG.Domain.Entities;
 using FCG.Domain.Enums;
 using FCG.Domain.Repositories;
 using FCG.FiapCloudGames.Core.Entities;
+using Microsoft.AspNetCore.Http;
+using System.Net.Http;
 
 namespace FCG.Application.Services
 {
@@ -13,11 +15,16 @@ namespace FCG.Application.Services
     {
         private readonly IGameRepository _gameRepository;
         private readonly ILoggerService _loggerService;
-        public GameService(IGameRepository gameRepository, ILoggerService loggerService)
+        private readonly IHttpContextAccessor _httpContext;
+        public GameService(
+                IGameRepository gameRepository, 
+                ILoggerService loggerService,
+                IHttpContextAccessor httpContext)
         {
             _gameRepository = gameRepository 
                 ?? throw new ArgumentNullException(nameof(gameRepository));
             _loggerService = loggerService;
+            _httpContext = httpContext;
         }
 
         public IEnumerable<GameResponse> GetAllGames()
@@ -26,6 +33,7 @@ namespace FCG.Application.Services
 
             _loggerService.LogTraceAsync(new Trace
             {
+                LogId = _httpContext.HttpContext?.Items["RequestId"] as Guid?,
                 Timestamp = DateTime.UtcNow,
                 Level = LogLevel.Info,
                 Message = "Retrieved all games",
