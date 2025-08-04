@@ -57,10 +57,11 @@ jobs:
             --resource-group RG_FCG \
             --image acrfcg.azurecr.io/fiapcloudgames/api:latest \
             --set-env-vars \
-                "FiapCloudGamesDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
-                "NEW_RELIC_LICENSE_KEY=${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
-                "NEW_RELIC_APP_NAME=${{ vars.NEW_RELIC_APP_NAME }}" \
-                "ASPNETCORE_ENVIRONMENT=${{ vars.ENV }}"
+                "ConnectionStrings__FiapCloudGamesDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
+                "NewRelic__LicenseKey =${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
+                "NewRelic__AppName =${{ vars.NEW_RELIC_APP_NAME }}" \
+                "AspNetCore__Environment=${{ vars.ENV }}" \
+                "NewRelic__Enabled=${{ vars.NEW_RELIC_ENABLED }}"
 
   deploy-uat:
     needs: deploy-dev
@@ -80,10 +81,11 @@ jobs:
             --resource-group RG_FCG \
             --image acrfcg.azurecr.io/fiapcloudgames/api:latest \
             --set-env-vars \
-                "FiapCloudGamesDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
-                "NEW_RELIC_LICENSE_KEY=${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
-                "NEW_RELIC_APP_NAME=${{ vars.NEW_RELIC_APP_NAME }}" \
-                "ASPNETCORE_ENVIRONMENT=${{ vars.ENV }}"
+                "ConnectionStrings__FiapCloudGamesDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
+                "NewRelic__LicenseKey =${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
+                "NewRelic__AppName =${{ vars.NEW_RELIC_APP_NAME }}" \
+                "AspNetCore__Environment=${{ vars.ENV }}" \
+                "NewRelic__Enabled=${{ vars.NEW_RELIC_ENABLED }}"
 
   deploy-prd:
     needs: deploy-uat
@@ -104,8 +106,9 @@ jobs:
             --resource-group RG_FCG \
             --image acrfcg.azurecr.io/fiapcloudgames/api:latest \
             --set-env-vars \
-                "FiapCloudGamesDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
-                "NEW_RELIC_LICENSE_KEY=${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
-                "NEW_RELIC_APP_NAME=${{ vars.NEW_RELIC_APP_NAME }}" \
-                "ASPNETCORE_ENVIRONMENT=${{ vars.ENV }}"
+                "ConnectionStrings__FiapCloudGamesDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
+                "NewRelic__LicenseKey =${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
+                "NewRelic__AppName =${{ vars.NEW_RELIC_APP_NAME }}" \
+                "AspNetCore__Environment=${{ vars.ENV }}" \
+                "NewRelic__Enabled=${{ vars.NEW_RELIC_ENABLED }}"
 

@@ -2,6 +2,7 @@
 using FCG.Application.Interfaces;
 using FCG.Domain.Entities;
 using FCG.Domain.Exceptions;
+using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using System.Text.Json;
 
@@ -92,7 +93,7 @@ namespace FCG.API.Middlewares
                 logEntry.Duration = stopwatch.Elapsed;
 
                 // Atualiza log no banco
-                await loggerService.UpdateRequestLogAsync(logEntry);
+                loggerService.UpdateRequestLogAsync(logEntry);
             }
             catch (Exception ex)
             { 

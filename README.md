@@ -79,11 +79,15 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
   - Autenticação
   - Serviços e repositórios mockados
 - ✅ Cobertura de cenários felizes e inválidos
-
+- ✅ Testes de carga e performance (utilizando K6)
+  ```bash
+  k6 run load-test.js
+  ```
 
 ## ⚙️ Pré-requisitos
 - .NET 8 SDK instalado
 - SQL Server
+- K6 para testes de carga (opcional)
 
 
 ## 🛠️ Setup do Projeto

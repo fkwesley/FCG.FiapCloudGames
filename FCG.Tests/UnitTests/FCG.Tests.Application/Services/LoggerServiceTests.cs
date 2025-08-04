@@ -1,9 +1,12 @@
 ﻿using FCG.Application.Services;
+using FCG.Application.Settings;
 using FCG.Domain.Entities;
 using FCG.Domain.Enums;
 using FCG.Domain.Repositories;
+using FCG.Infrastructure.Repositories;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using Moq;
 
 namespace FCG.Tests.UnitTests.FCG.Tests.Application.Services
@@ -11,15 +14,19 @@ namespace FCG.Tests.UnitTests.FCG.Tests.Application.Services
     public class LoggerServiceTests
     {
         private readonly Mock<ILoggerRepository> _loggerRepoMock;
+        private readonly Mock<INewRelicLoggerRepository> _newRelicLoggerMock;
         private readonly Mock<IHttpContextAccessor> _httpContextMock;
+        private readonly Mock<IOptions<ExternalLoggerSettings>> _externalLoggerSettingsMock;
         private readonly LoggerService _loggerService;
 
         public LoggerServiceTests()
         {
             _loggerRepoMock = new Mock<ILoggerRepository>();
+            _newRelicLoggerMock = new Mock<INewRelicLoggerRepository>();
             _httpContextMock = new Mock<IHttpContextAccessor>();
+            _externalLoggerSettingsMock = new Mock<IOptions<ExternalLoggerSettings>>();
 
-            _loggerService = new LoggerService(_loggerRepoMock.Object, _httpContextMock.Object);
+            _loggerService = new LoggerService(_loggerRepoMock.Object, _newRelicLoggerMock.Object, _httpContextMock.Object, _externalLoggerSettingsMock.Object);
         }
 
         [Fact]

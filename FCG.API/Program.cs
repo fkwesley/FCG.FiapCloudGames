@@ -3,6 +3,7 @@ using FCG.API.Middlewares;
 using FCG.API.Models;
 using FCG.Application.Interfaces;
 using FCG.Application.Services;
+using FCG.Application.Settings;
 using FCG.Domain.Repositories;
 using FCG.Infrastructure.Context;
 using FCG.Infrastructure.Repositories;
@@ -25,8 +26,10 @@ var configuration = new ConfigurationBuilder()
 var jwtKey = configuration["Jwt:Key"];
 var jwtIssuer = configuration["Jwt:Issuer"];
 
-var connectionString = Environment.GetEnvironmentVariable("FiapCloudGamesDbConnection") 
-                            ?? configuration.GetConnectionString("FiapCloudGamesDbConnection");
+var connectionString = configuration.GetConnectionString("FiapCloudGamesDbConnection")
+                            ?? throw new ArgumentNullException("Connection string 'FiapCloudGamesDbConnection' not found.");
+
+builder.Services.Configure<ExternalLoggerSettings>(builder.Configuration.GetSection("NewRelic"));
 #endregion
 
 #region services
@@ -134,6 +137,7 @@ builder.Services.AddScoped<ILoggerService, LoggerService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
 builder.Services.AddScoped<ILoggerRepository, LoggerRepository>();
+builder.Services.AddScoped<INewRelicLoggerRepository, NewRelicLoggerRepository>();
 
 // Register the DbContext with dependency injection
 builder.Services.AddDbContext<FiapCloudGamesDbContext>(options =>
