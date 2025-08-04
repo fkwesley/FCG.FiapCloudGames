@@ -1,10 +1,13 @@
 ﻿using FCG.Application.Interfaces;
 using FCG.Application.Settings;
 using FCG.Domain.Entities;
+using FCG.Domain.Enums;
 using FCG.Domain.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using System.Diagnostics;
 using System.Net.Http;
+using Trace = FCG.Domain.Entities.Trace;
 
 namespace FCG.Application.Services
 {
@@ -38,6 +41,15 @@ namespace FCG.Application.Services
             }
             catch (Exception ex)
             {
+                await _newRelicLoggerRepository.SendLogAsync(new Trace
+                {
+                    LogId = trace.LogId,
+                    Timestamp = DateTime.UtcNow,
+                    Level = LogLevel.Error,
+                    Message = "Error logging trace async: " + ex.Message,
+                    StackTrace = ex.StackTrace
+                });
+
                 Console.WriteLine("Erro LogTraceAsync Message - " + ex.Message);
                 Console.WriteLine();
                 Console.WriteLine("Erro LogTraceAsync StackTrace - " + ex.StackTrace);
@@ -60,6 +72,15 @@ namespace FCG.Application.Services
             }
             catch (Exception ex)
             {
+                await _newRelicLoggerRepository.SendLogAsync(new Trace
+                {
+                    LogId = log.LogId,
+                    Timestamp = DateTime.UtcNow,
+                    Level = LogLevel.Error,
+                    Message = "Error logging request async: " + ex.Message,
+                    StackTrace = ex.StackTrace
+                });
+
                 Console.WriteLine("Erro LogRequestAsync Message - " + ex.Message);
                 Console.WriteLine();
                 Console.WriteLine("Erro LogRequestAsync StackTrace - " + ex.StackTrace);
@@ -82,6 +103,15 @@ namespace FCG.Application.Services
             }
             catch (Exception ex)
             {
+                await _newRelicLoggerRepository.SendLogAsync(new Trace
+                {
+                    LogId = log.LogId,
+                    Timestamp = DateTime.UtcNow,
+                    Level = LogLevel.Error,
+                    Message = "Error updating RequestLog Async: " + ex.Message,
+                    StackTrace = ex.StackTrace
+                });
+
                 Console.WriteLine("Erro UpdateRequestLogAsync Message - " + ex.Message);
                 Console.WriteLine();
                 Console.WriteLine("Erro UpdateRequestLogAsync StackTrace - " + ex.StackTrace);
