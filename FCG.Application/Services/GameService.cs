@@ -32,25 +32,21 @@ namespace FCG.Application.Services
             _scopeFactory = scopeFactory;
         }
 
-        public IEnumerable<GameResponse> GetAllGames()
+        public async Task<IEnumerable<GameResponse>> GetAllGamesAsync()
         {
             var games = _gameRepository.GetAllGames();
 
-            //// Cria um escopo DI novo para o log (isolado do contexto da requisição)
-            //using var scope = _scopeFactory.CreateScope();
+            using var scope = _scopeFactory.CreateScope();
+            var loggerService = scope.ServiceProvider.GetRequiredService<ILoggerService>();
 
-            //// Pega o LoggerService do escopo novo
-            //var loggerService = scope.ServiceProvider.GetRequiredService<ILoggerService>();
-
-            //// loga utilizando o novo scope criado
-            //loggerService.LogTraceAsync(new Trace
-            //{
-            //    LogId = _httpContext.HttpContext?.Items["RequestId"] as Guid?,
-            //    Timestamp = DateTime.UtcNow,
-            //    Level = LogLevel.Info,
-            //    Message = "Retrieved all games",
-            //    StackTrace = null
-            //});
+            await loggerService.LogTraceAsync(new Trace
+            {
+                LogId = _httpContext.HttpContext?.Items["RequestId"] as Guid?,
+                Timestamp = DateTime.UtcNow,
+                Level = LogLevel.Info,
+                Message = "Retrieved all games",
+                StackTrace = null
+            });
 
             return games.Select(game => game.ToResponse()).ToList();
         }

@@ -35,12 +35,12 @@ namespace FCG.Tests.UnitTests.FCG.Tests.Application.Services
         }
 
         [Fact]
-        public void GetAllGames_ShouldReturnAllGames()
+        public async Task GetAllGames_ShouldReturnAllGames()
         {
             // Arrange
             var games = new List<Game> { new Game { GameId = 1, Name = "GTA IV", Description = "O mais aguardado", Genre = "Action", CreatedAt = DateTime.UtcNow.AddMinutes(50) } };
             _gameRepositoryMock.Setup(r => r.GetAllGames()).Returns(games);
-            
+
             var serviceProviderMock = new Mock<IServiceProvider>();
             serviceProviderMock.Setup(sp => sp.GetService(typeof(ILoggerService))).Returns(Mock.Of<ILoggerService>());
 
@@ -50,7 +50,7 @@ namespace FCG.Tests.UnitTests.FCG.Tests.Application.Services
             _scopeFactory.Setup(sf => sf.CreateScope()).Returns(serviceScopeMock.Object);
 
             // Act
-            var result = _gameService.GetAllGames();
+            var result = await _gameService.GetAllGamesAsync();
 
             // Assert
             result.Should().HaveCount(1);

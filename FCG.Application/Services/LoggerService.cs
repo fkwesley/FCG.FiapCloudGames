@@ -4,6 +4,7 @@ using FCG.Domain.Entities;
 using FCG.Domain.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using System.Net.Http;
 
 namespace FCG.Application.Services
 {
@@ -14,8 +15,8 @@ namespace FCG.Application.Services
         private readonly bool _externalLoggerEnabled;
 
         public LoggerService(
-            ILoggerRepository loggerRepository, 
-            INewRelicLoggerRepository newRelicLoggerRepository, 
+            ILoggerRepository loggerRepository,
+            INewRelicLoggerRepository newRelicLoggerRepository,
             IOptions<ExternalLoggerSettings> externalLogger)
         {
             _loggerRepository = loggerRepository ?? throw new ArgumentNullException(nameof(loggerRepository));
@@ -31,7 +32,18 @@ namespace FCG.Application.Services
             if (_externalLoggerEnabled)
                 _newRelicLoggerRepository.SendLogAsync(trace);
 
-            await _loggerRepository.LogTraceAsync(trace);
+            try
+            {
+                await _loggerRepository.LogTraceAsync(trace);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erro LogTraceAsync Message - " + ex.Message);
+                Console.WriteLine();
+                Console.WriteLine("Erro LogTraceAsync StackTrace - " + ex.StackTrace);
+                Console.WriteLine();
+                throw;
+            }
         }
 
         public async Task LogRequestAsync(RequestLog log)
@@ -42,7 +54,18 @@ namespace FCG.Application.Services
             if (_externalLoggerEnabled && log.StatusCode != 0)
                 _newRelicLoggerRepository.SendLogAsync(log);
 
-            await _loggerRepository.LogRequestAsync(log);
+            try
+            {
+                await _loggerRepository.LogRequestAsync(log);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erro LogRequestAsync Message - " + ex.Message);
+                Console.WriteLine();
+                Console.WriteLine("Erro LogRequestAsync StackTrace - " + ex.StackTrace);
+                Console.WriteLine();
+                throw;
+            }
         }
 
         public async Task UpdateRequestLogAsync(RequestLog log)
@@ -53,7 +76,19 @@ namespace FCG.Application.Services
             if (_externalLoggerEnabled && log.StatusCode != 0)
                 _newRelicLoggerRepository.SendLogAsync(log);
 
-            await _loggerRepository.UpdateRequestLogAsync(log);
+            try
+            {
+                await _loggerRepository.UpdateRequestLogAsync(log);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erro UpdateRequestLogAsync Message - " + ex.Message);
+                Console.WriteLine();
+                Console.WriteLine("Erro UpdateRequestLogAsync StackTrace - " + ex.StackTrace);
+                Console.WriteLine();
+                throw;
+            }
+
         }
     }
 }

@@ -29,7 +29,6 @@ export function setup() {
         'Login retornou 200': (res) => res.status === 200,
     });
 
-    // ✅ Aqui está a correção importante:
     let token = '';
     try {
         const json = JSON.parse(loginRes.body);

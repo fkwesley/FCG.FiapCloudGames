@@ -29,9 +29,9 @@ namespace FCG.FiapCloudGames.Controllers
         [ProducesResponseType(typeof(IEnumerable<GameResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var games = _gameService.GetAllGames();
+            var games = await _gameService.GetAllGamesAsync();
             return Ok(games);
         }
 
