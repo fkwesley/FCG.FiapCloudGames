@@ -7,6 +7,7 @@ using FCG.Domain.Repositories;
 using FCG.FiapCloudGames.Core.Entities;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -20,14 +21,17 @@ namespace FCG.Tests.UnitTests.FCG.Tests.Application.Services
         private readonly Mock<IGameRepository> _gameRepositoryMock;
         private readonly Mock<ILoggerService> _loggerServiceMock;
         private readonly Mock<IHttpContextAccessor> _httpContextMock;
+        private readonly Mock<IServiceScopeFactory> _scopeFactory;
         private readonly GameService _gameService;
+
 
         public GameServiceTests()
         {
             _gameRepositoryMock = new Mock<IGameRepository>();
             _loggerServiceMock = new Mock<ILoggerService>();
             _httpContextMock = new Mock<IHttpContextAccessor>();
-            _gameService = new GameService(_gameRepositoryMock.Object, _loggerServiceMock.Object, _httpContextMock.Object);
+            _scopeFactory = new Mock<IServiceScopeFactory>();
+            _gameService = new GameService(_gameRepositoryMock.Object, _loggerServiceMock.Object, _httpContextMock.Object, _scopeFactory.Object);
         }
 
         [Fact]
@@ -35,7 +39,15 @@ namespace FCG.Tests.UnitTests.FCG.Tests.Application.Services
         {
             // Arrange
             var games = new List<Game> { new Game { GameId = 1, Name = "GTA IV", Description = "O mais aguardado", Genre = "Action", CreatedAt = DateTime.UtcNow.AddMinutes(50) } };
-            _gameRepositoryMock.Setup(r => r.GetAllGames()).Returns(games); 
+            _gameRepositoryMock.Setup(r => r.GetAllGames()).Returns(games);
+            
+            var serviceProviderMock = new Mock<IServiceProvider>();
+            serviceProviderMock.Setup(sp => sp.GetService(typeof(ILoggerService))).Returns(Mock.Of<ILoggerService>());
+
+            var serviceScopeMock = new Mock<IServiceScope>();
+            serviceScopeMock.Setup(s => s.ServiceProvider).Returns(serviceProviderMock.Object);
+
+            _scopeFactory.Setup(sf => sf.CreateScope()).Returns(serviceScopeMock.Object);
 
             // Act
             var result = _gameService.GetAllGames();
