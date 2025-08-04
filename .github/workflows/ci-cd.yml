@@ -58,8 +58,8 @@ jobs:
             --image acrfcg.azurecr.io/fiapcloudgames/api:latest \
             --set-env-vars \
                 "ConnectionStrings__FiapCloudGamesDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
-                "NewRelic__LicenseKey =${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
-                "NewRelic__AppName =${{ vars.NEW_RELIC_APP_NAME }}" \
+                "NewRelic__LicenseKey=${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
+                "NewRelic__AppName=${{ vars.NEW_RELIC_APP_NAME }}" \
                 "AspNetCore__Environment=${{ vars.ENV }}" \
                 "NewRelic__Enabled=${{ vars.NEW_RELIC_ENABLED }}"
 
@@ -82,8 +82,8 @@ jobs:
             --image acrfcg.azurecr.io/fiapcloudgames/api:latest \
             --set-env-vars \
                 "ConnectionStrings__FiapCloudGamesDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
-                "NewRelic__LicenseKey =${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
-                "NewRelic__AppName =${{ vars.NEW_RELIC_APP_NAME }}" \
+                "NewRelic__LicenseKey=${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
+                "NewRelic__AppName=${{ vars.NEW_RELIC_APP_NAME }}" \
                 "AspNetCore__Environment=${{ vars.ENV }}" \
                 "NewRelic__Enabled=${{ vars.NEW_RELIC_ENABLED }}"
 
@@ -107,8 +107,8 @@ jobs:
             --image acrfcg.azurecr.io/fiapcloudgames/api:latest \
             --set-env-vars \
                 "ConnectionStrings__FiapCloudGamesDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
-                "NewRelic__LicenseKey =${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
-                "NewRelic__AppName =${{ vars.NEW_RELIC_APP_NAME }}" \
+                "NewRelic__LicenseKey=${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
+                "NewRelic__AppName=${{ vars.NEW_RELIC_APP_NAME }}" \
                 "AspNetCore__Environment=${{ vars.ENV }}" \
                 "NewRelic__Enabled=${{ vars.NEW_RELIC_ENABLED }}"
 
