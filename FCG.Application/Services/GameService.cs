@@ -7,6 +7,7 @@ using FCG.Domain.Enums;
 using FCG.Domain.Repositories;
 using FCG.FiapCloudGames.Core.Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http;
 
 namespace FCG.Application.Services
@@ -16,22 +17,33 @@ namespace FCG.Application.Services
         private readonly IGameRepository _gameRepository;
         private readonly ILoggerService _loggerService;
         private readonly IHttpContextAccessor _httpContext;
+        private readonly IServiceScopeFactory _scopeFactory;
+
         public GameService(
                 IGameRepository gameRepository, 
                 ILoggerService loggerService,
-                IHttpContextAccessor httpContext)
+                IHttpContextAccessor httpContext,
+                IServiceScopeFactory scopeFactory)
         {
             _gameRepository = gameRepository 
                 ?? throw new ArgumentNullException(nameof(gameRepository));
             _loggerService = loggerService;
             _httpContext = httpContext;
+            _scopeFactory = scopeFactory;
         }
 
         public IEnumerable<GameResponse> GetAllGames()
         {
             var games = _gameRepository.GetAllGames();
 
-            _loggerService.LogTraceAsync(new Trace
+            // Cria um escopo DI novo para o log (isolado do contexto da requisição)
+            using var scope = _scopeFactory.CreateScope();
+
+            // Pega o LoggerService do escopo novo
+            var loggerService = scope.ServiceProvider.GetRequiredService<ILoggerService>();
+
+            // loga utilizando o novo scope criado
+            loggerService.LogTraceAsync(new Trace
             {
                 LogId = _httpContext.HttpContext?.Items["RequestId"] as Guid?,
                 Timestamp = DateTime.UtcNow,
