@@ -93,7 +93,7 @@ namespace FCG.API.Middlewares
                 logEntry.Duration = stopwatch.Elapsed;
 
                 // Atualiza log no banco
-                loggerService.UpdateRequestLogAsync(logEntry);
+                await loggerService.UpdateRequestLogAsync(logEntry);
             }
             catch (Exception ex)
             { 
