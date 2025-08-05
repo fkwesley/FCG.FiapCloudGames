@@ -2,11 +2,11 @@ name: CI/CD - FCG
   
 on:
   push:
-    branches-ignore:
-      - master  # push direto na master NÃO dispara o pipeline
+    branches:
+      - '**'
   pull_request:
     branches:
-      - master  # master dispara SÓ por PR
+      - '**'
 
 jobs:
   build-test-pushDockerImage:
