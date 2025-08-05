@@ -15,8 +15,14 @@ export const get200 = new Counter('get_200');
 export const delete204 = new Counter('delete_204');
 
 export let options = {
-    vus: 5,           // 10 usuários simultâneos
-    duration: '1m',  // Use essa linha para rodar por tempo (ex: 10 minutos)
+    //vus: 5,           // 10 usuários simultâneos
+    //iterations: 100, // Use essa linha para rodar por número de iterações
+    //duration: '1m',  // Use essa linha para rodar por tempo (ex: 10 minutos)
+    stages: [        // Use essa seção para ramp-up e ramp-down
+        { duration: '2m', target: 30 }, // ramp-up para 10 usuários em 2 minutos
+        { duration: '5m', target: 60 }, // mantém 10 usuários por 5 minutos
+        { duration: '2m', target: 10 },  // ramp-down para 0 usuários em 2 minutos
+    ]
 };
 
 const users = [
@@ -129,7 +135,7 @@ export default function (data) {
 
     const futureDate = new Date(Date.now() + 50 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
     const putPayload = JSON.stringify({
-        name: __ITER % 5 === 0 ? foundGame.name : `update test ${__VU}_${__ITER}`,
+        name: __ITER % 5 === 0 ? gameName : `update test ${__VU}_${__ITER}`,
         description: "update test",
         genre: "soccer",
         rating: 3,
@@ -142,7 +148,7 @@ export default function (data) {
         { headers: userHeaders }
     );
 
-    console.log(`PUT /Games para usuário ${user.userId} , status:  ${putRes.status} , body: ${putRes.body}`);
+    //console.log(`PUT /Games para usuário ${user.userId} , status:  ${putRes.status} , body: ${putRes.body}`);
 
     if (putRes.status === 200) {
         check(putRes, { 'PUT /games realizado com sucesso (200)': (r) => r.status === 200 });
