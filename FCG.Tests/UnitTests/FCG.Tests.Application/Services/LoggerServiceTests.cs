@@ -1,9 +1,12 @@
 ﻿using FCG.Application.Services;
+using FCG.Application.Settings;
 using FCG.Domain.Entities;
 using FCG.Domain.Enums;
 using FCG.Domain.Repositories;
+using FCG.Infrastructure.Repositories;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using Moq;
 
 namespace FCG.Tests.UnitTests.FCG.Tests.Application.Services
@@ -11,37 +14,27 @@ namespace FCG.Tests.UnitTests.FCG.Tests.Application.Services
     public class LoggerServiceTests
     {
         private readonly Mock<ILoggerRepository> _loggerRepoMock;
-        private readonly Mock<IHttpContextAccessor> _httpContextMock;
+        private readonly Mock<INewRelicLoggerRepository> _newRelicLoggerMock;
+        private readonly Mock<IOptions<ExternalLoggerSettings>> _externalLoggerSettingsMock;
         private readonly LoggerService _loggerService;
 
         public LoggerServiceTests()
         {
             _loggerRepoMock = new Mock<ILoggerRepository>();
-            _httpContextMock = new Mock<IHttpContextAccessor>();
+            _newRelicLoggerMock = new Mock<INewRelicLoggerRepository>();
+            _externalLoggerSettingsMock = new Mock<IOptions<ExternalLoggerSettings>>();
 
-            _loggerService = new LoggerService(_loggerRepoMock.Object, _httpContextMock.Object);
+            _loggerService = new LoggerService(_loggerRepoMock.Object, _newRelicLoggerMock.Object, _externalLoggerSettingsMock.Object);
         }
 
         [Fact]
-        public async Task LogTraceAsync_ShouldUseRequestId_WhenLogIdIsNull()
+        public async Task LogTraceAsync_ShouldThrow_WhenLogIdIsNull()
         {
             // Arrange
-            var expectedId = Guid.NewGuid();
             var trace = new Trace { Message = "Test", Level = LogLevel.Info, LogId = null };
 
-            var context = new DefaultHttpContext();
-            context.Items["RequestId"] = expectedId;
-            _httpContextMock.Setup(h => h.HttpContext).Returns(context);
-
-            _loggerRepoMock.Setup(r => r.LogTraceAsync(It.IsAny<Trace>()))
-                .Returns(Task.CompletedTask)
-                .Callback<Trace>(t => t.LogId.Should().Be(expectedId));
-
-            // Act
-            await _loggerService.LogTraceAsync(trace);
-
-            // Assert
-            _loggerRepoMock.Verify(r => r.LogTraceAsync(It.IsAny<Trace>()), Times.Once);
+            // Act & Assert
+            await Assert.ThrowsAsync<ArgumentNullException>(() => _loggerService.LogTraceAsync(trace));
         }
 
         [Fact]

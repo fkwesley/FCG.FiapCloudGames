@@ -1,54 +1,124 @@
 ﻿using FCG.Application.Interfaces;
+using FCG.Application.Settings;
 using FCG.Domain.Entities;
+using FCG.Domain.Enums;
 using FCG.Domain.Repositories;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
+using System.Diagnostics;
+using System.Net.Http;
+using Trace = FCG.Domain.Entities.Trace;
 
 namespace FCG.Application.Services
 {
     public class LoggerService : ILoggerService
     {
         private readonly ILoggerRepository _loggerRepository;
-        private readonly IHttpContextAccessor _httpContext;
+        private readonly INewRelicLoggerRepository _newRelicLoggerRepository;
+        private readonly bool _externalLoggerEnabled;
 
-        public LoggerService(ILoggerRepository loggerRepository, IHttpContextAccessor httpContext)
+        public LoggerService(
+            ILoggerRepository loggerRepository,
+            INewRelicLoggerRepository newRelicLoggerRepository,
+            IOptions<ExternalLoggerSettings> externalLogger)
         {
-            _loggerRepository = loggerRepository
-                ?? throw new ArgumentNullException(nameof(loggerRepository));
-            _httpContext = httpContext;
+            _loggerRepository = loggerRepository ?? throw new ArgumentNullException(nameof(loggerRepository));
+            _newRelicLoggerRepository = newRelicLoggerRepository ?? throw new ArgumentNullException(nameof(newRelicLoggerRepository));
+            _externalLoggerEnabled = externalLogger?.Value?.Enabled ?? false;
         }
 
-        public Task LogTraceAsync(Trace trace)
+        public async Task LogTraceAsync(Trace trace)
         {
-            if (trace == null)
-                throw new ArgumentNullException(nameof(trace), "Log entry cannot be null.");
+            if (trace == null || trace.LogId == null)
+                throw new ArgumentNullException(nameof(trace), "Log entry or LogId cannot be null.");
 
-            if (trace.LogId == null)
+            if (_externalLoggerEnabled)
+                _newRelicLoggerRepository.SendLogAsync(trace);
+
+            try
             {
-                // If LogId is not set, try to retrieve it from the current HTTP context
-                var context = _httpContext.HttpContext;
-
-                if (context != null && context.Items.TryGetValue("RequestId", out var requestIdObj) && requestIdObj is Guid requestId)
-                        trace.LogId = requestId;
+                await _loggerRepository.LogTraceAsync(trace);
             }
+            catch (Exception ex)
+            {
+                await _newRelicLoggerRepository.SendLogAsync(new Trace
+                {
+                    LogId = trace.LogId,
+                    Timestamp = DateTime.UtcNow,
+                    Level = LogLevel.Error,
+                    Message = "Error logging trace async: " + ex.Message,
+                    StackTrace = ex.StackTrace
+                });
 
-
-            return _loggerRepository.LogTraceAsync(trace);
+                Console.WriteLine("Erro LogTraceAsync Message - " + ex.Message);
+                Console.WriteLine();
+                Console.WriteLine("Erro LogTraceAsync StackTrace - " + ex.StackTrace);
+                Console.WriteLine();
+                throw;
+            }
         }
 
-        public Task LogRequestAsync(RequestLog log)
+        public async Task LogRequestAsync(RequestLog log)
         {
             if (log == null)
                 throw new ArgumentNullException(nameof(log), "Log cannot be null.");
 
-            return _loggerRepository.LogRequestAsync(log);
+            if (_externalLoggerEnabled && log.StatusCode != 0)
+                _newRelicLoggerRepository.SendLogAsync(log);
+
+            try
+            {
+                await _loggerRepository.LogRequestAsync(log);
+            }
+            catch (Exception ex)
+            {
+                await _newRelicLoggerRepository.SendLogAsync(new Trace
+                {
+                    LogId = log.LogId,
+                    Timestamp = DateTime.UtcNow,
+                    Level = LogLevel.Error,
+                    Message = "Error logging request async: " + ex.Message,
+                    StackTrace = ex.StackTrace
+                });
+
+                Console.WriteLine("Erro LogRequestAsync Message - " + ex.Message);
+                Console.WriteLine();
+                Console.WriteLine("Erro LogRequestAsync StackTrace - " + ex.StackTrace);
+                Console.WriteLine();
+                throw;
+            }
         }
 
-        public Task UpdateRequestLogAsync(RequestLog log)
+        public async Task UpdateRequestLogAsync(RequestLog log)
         {
             if (log == null)
                 throw new ArgumentNullException(nameof(log), "Log entry cannot be null.");
 
-            return _loggerRepository.UpdateRequestLogAsync(log);
+            if (_externalLoggerEnabled && log.StatusCode != 0)
+                _newRelicLoggerRepository.SendLogAsync(log);
+
+            try
+            {
+                await _loggerRepository.UpdateRequestLogAsync(log);
+            }
+            catch (Exception ex)
+            {
+                await _newRelicLoggerRepository.SendLogAsync(new Trace
+                {
+                    LogId = log.LogId,
+                    Timestamp = DateTime.UtcNow,
+                    Level = LogLevel.Error,
+                    Message = "Error updating RequestLog Async: " + ex.Message,
+                    StackTrace = ex.StackTrace
+                });
+
+                Console.WriteLine("Erro UpdateRequestLogAsync Message - " + ex.Message);
+                Console.WriteLine();
+                Console.WriteLine("Erro UpdateRequestLogAsync StackTrace - " + ex.StackTrace);
+                Console.WriteLine();
+                throw;
+            }
+
         }
     }
 }

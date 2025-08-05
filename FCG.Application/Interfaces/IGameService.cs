@@ -5,7 +5,7 @@ namespace FCG.Application.Interfaces
 {
     public interface IGameService
     {
-        IEnumerable<GameResponse> GetAllGames();
+        Task<IEnumerable<GameResponse>> GetAllGamesAsync();
         GameResponse GetGameById(int id);
         GameResponse AddGame(GameRequest game);
         GameResponse UpdateGame(GameRequest game);
