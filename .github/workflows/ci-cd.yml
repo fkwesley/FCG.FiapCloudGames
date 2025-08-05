@@ -70,8 +70,8 @@ jobs:
             --image acrfcg.azurecr.io/fiapcloudgames/api:${{ needs.build-test-pushDockerImage.outputs.image_tag }} \
             --set-env-vars \
                 "ConnectionStrings__FiapCloudGamesDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
-                "NewRelic__LicenseKey=${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
-                "NewRelic__AppName=${{ vars.NEW_RELIC_APP_NAME }}" \
+                "NEW_RELIC_LICENSE_KEY=${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
+                "NEW_RELIC_APP_NAME=${{ vars.NEW_RELIC_APP_NAME }}" \
                 "NewRelic__Enabled=${{ vars.NEW_RELIC_ENABLED }}" \
                 "NewRelic__Endpoint=${{ vars.NEW_RELIC_ENDPOINT }}" \
                 "AspNetCore__Environment=${{ vars.ENV }}"
@@ -97,8 +97,8 @@ jobs:
             --image acrfcg.azurecr.io/fiapcloudgames/api:${{ needs.build-test-pushDockerImage.outputs.image_tag }} \
             --set-env-vars \
                 "ConnectionStrings__FiapCloudGamesDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
-                "NewRelic__LicenseKey=${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
-                "NewRelic__AppName=${{ vars.NEW_RELIC_APP_NAME }}" \
+                "NEW_RELIC_LICENSE_KEY=${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
+                "NEW_RELIC_APP_NAME=${{ vars.NEW_RELIC_APP_NAME }}" \
                 "NewRelic__Enabled=${{ vars.NEW_RELIC_ENABLED }}" \
                 "NewRelic__Endpoint=${{ vars.NEW_RELIC_ENDPOINT }}" \
                 "AspNetCore__Environment=${{ vars.ENV }}"
