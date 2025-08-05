@@ -77,7 +77,9 @@ jobs:
                 "AspNetCore__Environment=${{ vars.ENV }}"
 
   deploy-uat:
-    needs: deploy-dev
+    needs:
+      - build-test-pushDockerImage
+      - deploy-dev
     runs-on: ubuntu-latest
     environment: UAT
 
@@ -102,7 +104,10 @@ jobs:
                 "AspNetCore__Environment=${{ vars.ENV }}"
 
   deploy-prd:
-    needs: deploy-uat
+    needs: 
+      - build-test-pushDockerImage
+      - deploy-dev
+      - deploy-uat
     runs-on: ubuntu-latest
     environment: PRD
     if: github.ref == 'refs/heads/master'

@@ -8,19 +8,33 @@ API desenvolvida para gerenciamento de usuários e jogos, com foco em boas prát
 
 Desenvolver uma API RESTful robusta e escalável, aplicando:
 
-- Domain-Driven Design (DDD) 
-- Clean Architecture 
-- Principios SOLID 
-- Middleware para log de requisições e traces 
-- Middleware de tratamento de erros centralizado
-- Exceptions personalizadas
-- Uso do Entity Framework Core com migrations
-- Autenticação baseada em JWT
-- Autorização baseada em permissões
-- Hash seguro de senhas com salt
-- Validações de domínio e DTOs
-- Testes unitários com TDD 
-- Documententação Swagger com Swashbuckle.AspNetCore
+### **Fase 1:**
+  - Domain-Driven Design (DDD) 
+  - Clean Architecture 
+  - Principios SOLID 
+  - Middleware para log de requisições e traces 
+  - Middleware de tratamento de erros centralizado
+  - Exceptions personalizadas
+  - Uso do Entity Framework Core com migrations
+  - Autenticação baseada em JWT
+  - Autorização baseada em permissões
+  - Hash seguro de senhas com salt
+  - Validações de domínio e DTOs
+  - Testes unitários com TDD 
+  - Documententação Swagger com Swashbuckle.AspNetCore
+### **Fase 2:**
+  - **Escalabilidade:**
+    - Utilização de Docker para empacotamento da aplicação em container
+    - Versionamento de imagems Docker no ACR 
+    - Execução da aplicação em containers orquestrados pelo Azure Container Apps garantindo resiliência
+  - **Confiabilidade:**
+    - Build, testes unitários e push da imagem Docker via CI/CD multi-stage
+    - Parametrização de variáveis e secrets no GitHub Environments
+    - Testes de carga e performance utilziando K6
+  - **Monitoramento:**
+    - Traces no New Relic
+    - Logs no New Relic
+    - Dashboards de monitoramento (New Relic e Azure)
 
 
 ## 🚀 Tecnologias Utilizadas
@@ -36,6 +50,8 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
 | Swagger           | Swashbuckle.AspNetCore           |
 | Segurança         | PBKDF2 + salt com SHA256         |
 | Logger            | Middleware de Request/Response + LogId |
+| Docker            | Multi-stage Dockerfile para build e runtime |
+| Monitoramento     | New Relic (.NET Agent) + Azure |
 
 
 ## 🧠 Padrões e Boas Práticas
@@ -98,7 +114,7 @@ Siga esses passos para configurar e rodar o projeto localmente:
   ```bash
   git clone https://github.com/seu-usuario/fiap-cloud-games.git
   ```
-- Configurar a conexão com o banco de dados no `appsettings.json`
+- Configurar a conexão com o banco de dados no `appsettings.json` ou nas variáveis de ambiente
   ```json
   {
     "ConnectionStrings": {
@@ -146,6 +162,10 @@ FCG.FiapCloudGames/
 │   ├── Interfaces/                 # Interfaces usadas pela API
 │   ├── Services/                   # Serviços que coordenam o domínio
 │   └── DTOs/                       # Objetos de transferência de dados
+│   └── Helpers/                    # Classes auxiliares
+│   └── Exceptions/                 # Exceções específicas da camada de orquestração
+│   └── Mappings/                   # Mapeamentos entre DTOs e entidades
+│   └── Settings/                   # Configurações da aplicação
 │
 ├── FCG.Domain/                     # Camada de domínio (regra de negócio, entidades, contratos)
 │   ├── Entities/                   # Entidades como User e Game
@@ -166,7 +186,15 @@ FCG.FiapCloudGames/
 │       └── Helpers/                # Setup de mocks e objetos fake
 │   ├── IntegrationTests/           # Testes de Integração
 │
-└── README.md                       # Este arquivo
+├── FCG.Documentation/              # Documentação do projeto
+├── .github/                        # Configurações do GitHub Actions para CI/CD
+│
+├── .gitattributes                  # Configurações do Git
+├── .gitigore                       # Arquivo para ignorar arquivos no Git
+├── load-test.js                    # Script de teste de carga com K6
+├── Dockerfile                      # Dockerfile para containerização
+├── README.md                       # Este arquivo
+└── 
  ```
 
 
@@ -187,8 +215,8 @@ FCG.FiapCloudGames/
                                | Duration           |
                                +--------------------+       
 ```
- 
- 
+
+
 ## 🚀 Pipeline CI/CD
 
 O workflow está definido em `.github/workflows/ci-cd-fcg.yml`. 
@@ -197,7 +225,7 @@ Automatizando os seguintes passos:
 - Build e testes unitários
 - Build da imagem Docker
 - Push para Azure Container Registry (ACR)
-- Deploy automatizado para Azure Container Apps nas stages:
+- MultiStage para Deploy automatizado no Azure Container Apps:
    - DEV
    - UAT (necessário aprovação)
    - PRD (apenas com PR na branch `master` e necessário aprovação)
@@ -217,6 +245,21 @@ O projeto utiliza os seguintes recursos na Azure:
 
 As variáveis de ambiente sensíveis (como strings de conexão) são gerenciadas via Azure e GitHub Secrets.
 
+## 🐳Dockerfile e 📊Monitoramento
+
+Este projeto utiliza um Dockerfile em duas etapas para garantir uma imagem otimizada e segura:
+
+- **Stage 1 - Build**: Usa a imagem oficial do .NET SDK 8.0 para restaurar dependências, compilar e publicar a aplicação em modo Release.
+- **Stage 2 - Runtime**: Utiliza a imagem mais leve do ASP.NET 8.0 para executar a aplicação, copiando apenas os artefatos publicados da etapa de build, o que reduz o tamanho final da imagem.
+
+Além disso, o agente do **New Relic** é instalado na imagem de runtime para habilitar monitoramento detalhado da aplicação. As variáveis de ambiente necessárias para a configuração do agente são definidas no Dockerfile, podendo ser sobrescritas via ambiente de execução (ex.: Kubernetes, Azure Container Apps).
+
+Esse processo segue as melhores práticas:
+
+- **Multi-stage build:** mantém a imagem final enxuta e rápida para deploy.
+- **Separação clara:** entre build e runtime para evitar expor ferramentas de desenvolvimento.
+- **Instalação do agente New Relic:** automatizada e integrada para facilitar o monitoramento.
+- **Configuração via variáveis de ambiente:** flexível e segura para licenças e nomes de aplicação.
 
  ## ✍️ Autor
 - Frank Vieira
