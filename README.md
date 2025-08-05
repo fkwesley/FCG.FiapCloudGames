@@ -244,6 +244,7 @@ O projeto utiliza os seguintes recursos na Azure:
   - PRD: `aca-fcg` 
 
 As variáveis de ambiente sensíveis (como strings de conexão) são gerenciadas via Azure e GitHub Secrets.
+[Link para o desenho de infraestrutura](https://miro.com/app/board/uXjVIteOb6w=/?share_link_id=230805148396)
 
 ## 🐳Dockerfile e 📊Monitoramento
 
