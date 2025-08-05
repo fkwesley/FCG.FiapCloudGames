@@ -43,7 +43,7 @@ jobs:
       
       - name: Build Docker image
         run: |
-            docker build -t acrfcg.azurecr.io/fiapcloudgames/api:latest  
+            docker build -t acrfcg.azurecr.io/fiapcloudgames/api:latest \
                          -t acrfcg.azurecr.io/fiapcloudgames/api:${{ steps.set_tag.outputs.image_tag }} .
 
       - name: Push Docker image to ACR
