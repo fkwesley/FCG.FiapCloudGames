@@ -11,6 +11,8 @@ on:
 jobs:
   build-test-pushDockerImage:
     runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.set_tag.outputs.image_tag }}
 
     steps:
       - name: Checkout Code
@@ -32,12 +34,22 @@ jobs:
         
       - name: Login to Azure Container Registry
         run: echo ${{ secrets.AZURE_ACR_PASSWORD }} | docker login acrfcg.azurecr.io -u ${{ secrets.AZURE_ACR_USERNAME }} --password-stdin
-
+      
+      - name: Set Docker Image Tag
+        id: set_tag
+        run: |
+            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+            echo "image_tag=${SHORT_SHA}" >> $GITHUB_OUTPUT
+      
       - name: Build Docker image
-        run: docker build -t acrfcg.azurecr.io/fiapcloudgames/api:latest .
+        run: |
+            docker build -t acrfcg.azurecr.io/fiapcloudgames/api:latest  
+                         -t acrfcg.azurecr.io/fiapcloudgames/api:${{ steps.set_tag.outputs.image_tag }} .
 
       - name: Push Docker image to ACR
-        run: docker push acrfcg.azurecr.io/fiapcloudgames/api:latest
+        run: |
+            docker push acrfcg.azurecr.io/fiapcloudgames/api:latest
+            docker push acrfcg.azurecr.io/fiapcloudgames/api:${{ steps.set_tag.outputs.image_tag }}
 
   deploy-dev:
     needs: build-test-pushDockerImage
@@ -55,13 +67,14 @@ jobs:
           az containerapp update \
             --name aca-fcg-dev \
             --resource-group RG_FCG \
-            --image acrfcg.azurecr.io/fiapcloudgames/api:latest \
+            --image acrfcg.azurecr.io/fiapcloudgames/api:${{ needs.build-test-pushDockerImage.outputs.image_tag }} \
             --set-env-vars \
                 "ConnectionStrings__FiapCloudGamesDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
                 "NewRelic__LicenseKey=${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
                 "NewRelic__AppName=${{ vars.NEW_RELIC_APP_NAME }}" \
-                "AspNetCore__Environment=${{ vars.ENV }}" \
-                "NewRelic__Enabled=${{ vars.NEW_RELIC_ENABLED }}"
+                "NewRelic__Enabled=${{ vars.NEW_RELIC_ENABLED }}" \
+                "NewRelic__Endpoint=${{ vars.NEW_RELIC_ENDPOINT }}" \
+                "AspNetCore__Environment=${{ vars.ENV }}"
 
   deploy-uat:
     needs: deploy-dev
@@ -79,13 +92,14 @@ jobs:
           az containerapp update \
             --name aca-fcg-uat \
             --resource-group RG_FCG \
-            --image acrfcg.azurecr.io/fiapcloudgames/api:latest \
+            --image acrfcg.azurecr.io/fiapcloudgames/api:${{ needs.build-test-pushDockerImage.outputs.image_tag }} \
             --set-env-vars \
                 "ConnectionStrings__FiapCloudGamesDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
                 "NewRelic__LicenseKey=${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
                 "NewRelic__AppName=${{ vars.NEW_RELIC_APP_NAME }}" \
-                "AspNetCore__Environment=${{ vars.ENV }}" \
-                "NewRelic__Enabled=${{ vars.NEW_RELIC_ENABLED }}"
+                "NewRelic__Enabled=${{ vars.NEW_RELIC_ENABLED }}" \
+                "NewRelic__Endpoint=${{ vars.NEW_RELIC_ENDPOINT }}" \
+                "AspNetCore__Environment=${{ vars.ENV }}"
 
   deploy-prd:
     needs: deploy-uat
@@ -104,11 +118,12 @@ jobs:
           az containerapp update \
             --name aca-fcg \
             --resource-group RG_FCG \
-            --image acrfcg.azurecr.io/fiapcloudgames/api:latest \
+            --image acrfcg.azurecr.io/fiapcloudgames/api:${{ needs.build-test-pushDockerImage.outputs.image_tag }} \
             --set-env-vars \
                 "ConnectionStrings__FiapCloudGamesDbConnection=${{ secrets.FCG_DB_CONNECTION_STRING }}" \
                 "NewRelic__LicenseKey=${{ secrets.NEW_RELIC_LICENSE_KEY }}" \
                 "NewRelic__AppName=${{ vars.NEW_RELIC_APP_NAME }}" \
-                "AspNetCore__Environment=${{ vars.ENV }}" \
-                "NewRelic__Enabled=${{ vars.NEW_RELIC_ENABLED }}"
+                "NewRelic__Enabled=${{ vars.NEW_RELIC_ENABLED }}" \
+                "NewRelic__Endpoint=${{ vars.NEW_RELIC_ENDPOINT }}" \
+                "AspNetCore__Environment=${{ vars.ENV }}"
 
