@@ -2,7 +2,8 @@
 
 API desenvolvida para gerenciamento de usuários e jogos, com foco em boas práticas de arquitetura DDD, autenticação segura, validação robusta e testes automatizados.
 - Hospedada na Azure usando Container Apps e imagem publicada no ACR (Azure Container Registry).
-
+- [Vídeo com a apresentação da Fase 1](https://youtu.be/bmRaU8VjJZU)
+- [Vídeo com a apresentação da Fase 2](https://youtu.be/BXBc6JKnRpw)
 
 ## 📌 Objetivo
 
