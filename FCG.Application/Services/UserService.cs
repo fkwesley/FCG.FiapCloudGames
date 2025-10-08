@@ -31,6 +31,9 @@ namespace FCG.Application.Services
         {
             var userFound = _userRepository.GetUserById(userId);
 
+            if (userFound == null)
+                throw new KeyNotFoundException($"User with ID {userId} not found.");
+
             return userFound.ToResponse();
         }
 
@@ -59,11 +62,16 @@ namespace FCG.Application.Services
             if (!activeUsers.Any(u => u.UserId == user.UserId.ToUpper()))
                 throw new KeyNotFoundException($"User with ID {user.UserId} not found.");
 
-            if (activeUsers.Any(u => u.UserId != user.UserId && u.Email == user.Email.ToLower()))
+            if (activeUsers.Any(u => u.UserId != user.UserId.ToUpper() && u.Email == user.Email.ToLower()))
                 throw new ValidationException("E-mail already used by another active user. Try another one.");
 
             var userEntity = user.ToEntity();
             userEntity.SetPassword(user.Password, _passwordHasher);
+            userEntity.UpdatedAt = DateTime.UtcNow;
+            userEntity.Email = user.Email.ToLower();
+            userEntity.IsActive = user.IsActive;
+            userEntity.IsAdmin = user.IsAdmin;
+            userEntity.CreatedAt = activeUsers.FirstOrDefault(u => u.UserId == user.UserId.ToUpper()).CreatedAt;
 
             var userUpdated = _userRepository.UpdateUser(userEntity);
 
