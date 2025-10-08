@@ -1,9 +1,12 @@
 ﻿# 🎮 FCG.FiapCloudGames.API
 
-API desenvolvida para gerenciamento de usuários e jogos, com foco em boas práticas de arquitetura DDD, autenticação segura, validação robusta e testes automatizados.
-- Hospedada na Azure usando Container Apps e imagem publicada no ACR (Azure Container Registry).
-- [Vídeo com a apresentação da Fase 1](https://youtu.be/bmRaU8VjJZU)
-- [Vídeo com a apresentação da Fase 2](https://youtu.be/BXBc6JKnRpw)
+API desenvolvida para gerenciamento de usuários e jogos, com foco em boas práticas de arquitetura DDD, autenticação segura, validação robusta e testes automatizados. 
+
+Hospedada na Azure usando Container Apps e imagem publicada no ACR (Azure Container Registry).
+
+  - [Vídeo com a apresentação da Fase 1](https://youtu.be/bmRaU8VjJZU)
+  - [Vídeo com a apresentação da Fase 2](https://youtu.be/BXBc6JKnRpw)
+  - [Vídeo com a apresentação da Fase 3]()
 
 ## 📌 Objetivo
 
@@ -24,19 +27,24 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
   - Testes unitários com TDD 
   - Documententação Swagger com Swashbuckle.AspNetCore
 ### **Fase 2:**
-  - **Escalabilidade:**
+- **Escalabilidade:**
     - Utilização de Docker para empacotamento da aplicação em container
     - Versionamento de imagems Docker no ACR 
     - Execução da aplicação em containers orquestrados pelo Azure Container Apps garantindo resiliência
-  - **Confiabilidade:**
+- **Confiabilidade:**
     - Build, testes unitários e push da imagem Docker via CI/CD multi-stage
     - Parametrização de variáveis e secrets no GitHub Environments
     - Testes de carga e performance utilziando K6
-  - **Monitoramento:**
+- **Monitoramento:**
     - Traces no New Relic
     - Logs no New Relic
     - Dashboards de monitoramento (New Relic e Azure)
-
+### **Fase 3:**
+- [FCG.Users](https://github.com/fkwesley/FCG.Users)
+- [FCG.Games](https://github.com/fkwesley/FCG.Games)
+- [FCG.Orders](https://github.com/fkwesley/FCG.Orders)
+- [FCG.Payments](https://github.com/fkwesley/FCG.Payments)
+- [FCG.Functions](https://github.com/fkwesley/FCG.Functions)
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -53,6 +61,8 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
 | Logger            | Middleware de Request/Response + LogId |
 | Docker            | Multi-stage Dockerfile para build e runtime |
 | Monitoramento     | New Relic (.NET Agent) + Azure |
+| CI/CD             | GitHub Actions                   |
+| Testes de Carga   | K6                               |
 
 
 ## 🧠 Padrões e Boas Práticas
