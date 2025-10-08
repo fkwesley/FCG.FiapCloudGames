@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - '**'
-  pull_request:
-    branches:
-      - '**'
+    paths-ignore:
+      - '**/README.md'
+      - 'Documentation/**'
 
 jobs:
   build-test-pushDockerImage:
