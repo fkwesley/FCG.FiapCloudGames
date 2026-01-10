@@ -8,7 +8,6 @@ Hospedada na Azure usando Container Apps e imagem publicada no ACR (Azure Contai
 - [Vídeo com a apresentação da Fase 3](https://youtu.be/3OxTOgieuMg)
 - [Vídeo com a apresentação da Fase 4](https://youtu.be/WwIfjVCoxc8)
 
-
 ## 📌 Objetivo
 
 Desenvolver uma API RESTful robusta e escalável, aplicando:

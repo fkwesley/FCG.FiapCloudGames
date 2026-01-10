@@ -51,9 +51,12 @@ namespace FCG.Application.Services
             return games.Select(game => game.ToResponse()).ToList();
         }
 
-        public GameResponse GetGameById(int id)
+        public GameResponse GetGameById(int gameId)
         {
-            var gameFound = _gameRepository.GetGameById(id);
+            var gameFound = _gameRepository.GetGameById(gameId);
+
+            if (gameFound == null)
+                throw new KeyNotFoundException($"Game with ID {gameFound} not found.");
 
             return gameFound.ToResponse();
         }

@@ -1,6 +1,7 @@
 ﻿using FCG.Domain.Repositories;
 using FCG.FiapCloudGames.Core.Entities;
 using FCG.Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace FCG.Infrastructure.Repositories
 {
@@ -32,6 +33,13 @@ namespace FCG.Infrastructure.Repositories
 
         public User UpdateUser(User user)
         {
+            // Procura por uma instância já rastreada desse usuário
+            var trackedEntity = _context.ChangeTracker.Entries<User>().FirstOrDefault(e => e.Entity.UserId == user.UserId);
+
+            // Desanexa a entidade rastreada para evitar conflito
+            if (trackedEntity != null)
+                trackedEntity.State = EntityState.Detached;
+
             _context.Users.Update(user);
             _context.SaveChanges();
             return user;
@@ -43,7 +51,8 @@ namespace FCG.Infrastructure.Repositories
 
             if (user != null)
             {
-                _context.Users.Remove(user);
+                user.IsActive = false;
+                _context.Users.Update(user);
                 _context.SaveChanges();
                 return true;
             }
