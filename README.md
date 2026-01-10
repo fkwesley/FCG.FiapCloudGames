@@ -3,10 +3,10 @@
 API desenvolvida para gerenciamento de usuários e jogos, com foco em boas práticas de arquitetura DDD, autenticação segura, validação robusta e testes automatizados. 
 
 Hospedada na Azure usando Container Apps e imagem publicada no ACR (Azure Container Registry).
-
-  - [Vídeo com a apresentação da Fase 1](https://youtu.be/bmRaU8VjJZU)
-  - [Vídeo com a apresentação da Fase 2](https://youtu.be/BXBc6JKnRpw)
-  - [Vídeo com a apresentação da Fase 3]()
+- [Vídeo com a apresentação da Fase 1](https://youtu.be/bmRaU8VjJZU)
+- [Vídeo com a apresentação da Fase 2](https://youtu.be/BXBc6JKnRpw)
+- [Vídeo com a apresentação da Fase 3](https://youtu.be/3OxTOgieuMg)
+- [Vídeo com a apresentação da Fase 4](https://youtu.be/WwIfjVCoxc8)
 
 
 ## 📌 Objetivo
@@ -40,7 +40,7 @@ Desenvolver uma API RESTful robusta e escalável, aplicando:
     - Traces no New Relic
     - Logs no New Relic
     - Dashboards de monitoramento (New Relic e Azure)
-### **Fase 3:**
+### **Fase 3 e 4:**
 - [FCG.Users](https://github.com/fkwesley/FCG.Users)
 - [FCG.Games](https://github.com/fkwesley/FCG.Games)
 - [FCG.Orders](https://github.com/fkwesley/FCG.Orders)
